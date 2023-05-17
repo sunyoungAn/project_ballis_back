@@ -76,6 +76,7 @@ public class AdminProductController {
 		
 		spec = spec.and(ProductSpecification.equalDataStatus(1));
 		
+		// 설정한 검색 조건에 따라 유동적으로 조건설정
 		if(id != null) {
 			spec = spec.and(ProductSpecification.equalId(id));
 		}
