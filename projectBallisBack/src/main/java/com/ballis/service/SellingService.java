@@ -116,6 +116,14 @@ public class SellingService {
 		    List<Selling> sellings = sellingRepository.findByInventoryDivAndSellingStatusAndProductId(1, 11, productId);
 		    return sellings != null && !sellings.isEmpty();
 		}
+
+		public List<Selling> findBySellingStatus(int sellingStatus) {
+			return sellingRepository.findBySellingStatus(sellingStatus);
+		}
+
+		public List<Selling> findByMemberMemberNumber(Long memberNumber) {
+			return sellingRepository.findByMemberMemberNumber(memberNumber);
+		}
 	
 	
 

@@ -14,5 +14,9 @@ public interface SellingRepository extends JpaRepository<Selling, Long>, JpaSpec
 	
 	// 빠른 배송 상품 존재 하는지
 	List<Selling> findByInventoryDivAndSellingStatusAndProductId(Integer inventoryDiv, Integer sellingStatus, Long productid);
+
+	List<Selling> findBySellingStatus(int sellingStatus);
+
+	List<Selling> findByMemberMemberNumber(Long memberNumber);
 	
 }
