@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContractAndPaymentDTO {
+public class ContractSellingPaymentDTO {
 	
 	private ContractAddDTO contractDto;
+	private SellingAddDTO sellingDto;
 	private PaymentAddDTO paymentDto;
 
 }

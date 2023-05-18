@@ -70,15 +70,16 @@ public class ContractService {
 		contract.setPrice(contractDto.getPrice());		
 		contract.setProductSize(contractDto.getProductSize());
 		contract.setRegistDate(LocalDateTime.now());
-		contract.setBuyingStatus(31);
 		
 		// 빠른배송
 		if("fast".equals(type)) {
 			contract.setSellingStatus(null);
+			contract.setBuyingStatus(39);
 		}
 		// 즉시구매, 즉시판매
 		if("normal".equals(type)) {
 			contract.setSellingStatus(21);
+			contract.setBuyingStatus(31);
 		}
 		return contractRepository.save(contract);
 	}
