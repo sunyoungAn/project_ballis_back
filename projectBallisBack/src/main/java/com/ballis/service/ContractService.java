@@ -84,4 +84,17 @@ public class ContractService {
 		return contractRepository.save(contract);
 	}
 
+	
+	public List<Contract> findBySellerNumber(Long sellerNumber) {
+		return contractRepository.findBySellerNumber(sellerNumber);
+	}
+
+	public List<Contract> findByBuyerNumber(Long buyerNumber) {
+		return contractRepository.findByBuyerNumber(buyerNumber);
+	}
+
+	public List<Contract> findByBuyerNumberAndRegistDateBetween(Long buyerNumber, LocalDateTime startDateTime,
+			LocalDateTime endDateTime) {
+		return contractRepository.findByBuyerNumberAndRegistDateBetween(buyerNumber, startDateTime, endDateTime);
+	}
 }

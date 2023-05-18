@@ -1,5 +1,6 @@
 package com.ballis.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,12 @@ public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSp
 			nativeQuery = false)
 	List<ContractChartDTO> getContractChart(@Param("productid") Long productid);
 	
+	
+	List<Contract> findBySellerNumber(Long sellerNumber);
+
+	List<Contract> findByBuyerNumber(Long buyerNumber);
+
+	List<Contract> findByBuyerNumberAndRegistDateBetween(Long buyerNumber, LocalDateTime startDateTime,
+			LocalDateTime endDateTime);
+
 }

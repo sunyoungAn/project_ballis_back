@@ -18,4 +18,9 @@ public interface BuyingRepository extends JpaRepository<Buying, Long>,JpaSpecifi
 
 	List<Buying> findByMemberMemberNumber(Member member);
 	
+	List<Buying> findByMemberMemberNumber(Long memberNumber);
+
+	List<Buying> findBuyingByMemberMemberNumberAndRegistDateBetween(Long memberNumber, LocalDateTime startDateTime,
+			LocalDateTime endDateTime);
+	
 }

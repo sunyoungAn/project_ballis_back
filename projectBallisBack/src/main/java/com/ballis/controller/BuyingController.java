@@ -3,7 +3,11 @@ package com.ballis.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballis.model.Buying;
+import com.ballis.model.Contract;
 import com.ballis.model.Member;
+import com.ballis.model.Product;
 import com.ballis.model.DTO.BuyingAddDTO;
 import com.ballis.model.DTO.BuyingChartDTO;
 import com.ballis.service.BuyingService;
+import com.ballis.service.ContractService;
 import com.ballis.service.MemberService;
 import com.ballis.service.ProductService;
+
 
 
 @RestController
@@ -36,6 +44,9 @@ public class BuyingController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private ContractService contractService;
 	
 	@GetMapping("/api/get/buy/chart")
 	public List<BuyingChartDTO> findBuyingByProduct(@RequestParam Long productid){
@@ -52,23 +63,156 @@ public class BuyingController {
 	    }
 	}
 	
-	@GetMapping("/api/buying/date")
-	public List<Buying> searchDate( @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+	//구매입찰 날짜 검색
+	@GetMapping("/api/buying/date/{memberNumber}")
+	public ResponseEntity searchDate(@PathVariable Long memberNumber, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
 	        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+		Member member = memberService.findByMemberNumber(memberNumber);
+		List<Map<String, Object>> buyingList = new ArrayList<>();
 		
-		LocalDateTime startDateTime = startDate.atStartOfDay();
-		LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
-		
-		return buyingService.findBuyingByRegistDateBetween(startDateTime, endDateTime);
+	    LocalDateTime startDateTime = startDate.atStartOfDay();
+	    LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+	    
+	    List<Buying> lists = buyingService.findBuyingByMemberMemberNumberAndRegistDateBetween(member.getMemberNumber(), startDateTime, endDateTime);
+	    for(Buying buying : lists) {
+			Map<String, Object> buyinggMap = new HashMap<>();
+			buyinggMap.put("buying", buying);
+		    
+		    Product product = buying.getProduct();
+		    String productName = product.getProductKorName();
+		    buyinggMap.put("productName", productName);
+		        
+		    buyingList.add(buyinggMap);
+		}
+	    
+	    return new ResponseEntity<>(buyingList, HttpStatus.OK);
 	}
 	
+	//진행중 날짜 검색
+	@GetMapping("/api/buyinging/date/{buyerNumber}")
+	public ResponseEntity<List<Map<String, Object>>> searchDate2(@PathVariable("buyerNumber") Long buyerNumber, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+	        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+		List<Map<String, Object>> contractList = new ArrayList<>();
+		
+	    LocalDateTime startDateTime = startDate.atStartOfDay();
+	    LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+	    
+	    List<Contract> lists = contractService.findByBuyerNumberAndRegistDateBetween(buyerNumber, startDateTime, endDateTime);
+		List<Contract> filteredList = lists.stream()
+		            .filter(contract -> contract.getBuyingStatus() <= 49)
+		            .collect(Collectors.toList());
+
+		for (Contract contract : filteredList) {
+		     Map<String, Object> contractMap = new HashMap<>();
+		     contractMap.put("contract", contract);
+
+		     Product product = contract.getProduct();
+		     String productName = product.getProductKorName();
+		     contractMap.put("productName", productName);
+
+		     contractList.add(contractMap);
+		    }
+
+		return new ResponseEntity<>(contractList, HttpStatus.OK);
+	}
+
+	//완료 날짜 검색
+	@GetMapping("/api/buyingend/date/{buyerNumber}")
+	public ResponseEntity<List<Map<String, Object>>> searchDate3(@PathVariable("buyerNumber") Long buyerNumber, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+		        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+		List<Map<String, Object>> contractList = new ArrayList<>();
+			
+		LocalDateTime startDateTime = startDate.atStartOfDay();
+		LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+		    
+		List<Contract> lists = contractService.findByBuyerNumberAndRegistDateBetween(buyerNumber, startDateTime, endDateTime);
+		List<Contract> filteredList = lists.stream()
+			            .filter(contract -> contract.getBuyingStatus() >= 60)
+			            .collect(Collectors.toList());
+
+		for (Contract contract : filteredList) {
+			Map<String, Object> contractMap = new HashMap<>();
+			contractMap.put("contract", contract);
+
+			Product product = contract.getProduct();
+			String productName = product.getProductKorName();
+			contractMap.put("productName", productName);
+
+			contractList.add(contractMap);
+			}
+
+		return new ResponseEntity<>(contractList, HttpStatus.OK);
+	}
+	
+	//구매입찰 전체 리스트
 	@GetMapping("/api/get/buying/{memberNumber}")
 	public ResponseEntity getBuying(@PathVariable Long memberNumber) {
 		Member member = memberService.findByMemberNumber(memberNumber);
+		List<Map<String, Object>> buyingList = new ArrayList<>();
 		
-		List<Buying> lists = buyingService.finByMemberMemberNumber(member);
+		List<Buying> lists = buyingService.finByMemberMemberNumber(member.getMemberNumber());
+		for(Buying buying : lists) {
+			Map<String, Object> buyinggMap = new HashMap<>();
+			buyinggMap.put("buying", buying);
+		    
+		    Product product = buying.getProduct();
+		    String productName = product.getProductKorName();
+		    buyinggMap.put("productName", productName);
+		        
+		    buyingList.add(buyinggMap);
+		}
 		
-		return new ResponseEntity<>(lists, HttpStatus.OK);
+		return new ResponseEntity<>(buyingList, HttpStatus.OK);
 	}
+	
+	//진행중 전체 리스트
+	@GetMapping("/api/get/buyinging/{buyerNumber}")
+	public ResponseEntity<List<Map<String, Object>>> getbuyingIng(@PathVariable("buyerNumber") Long buyerNumber) {
+		List<Map<String, Object>> contractList = new ArrayList<>();
+		
+		 List<Contract> lists = contractService.findByBuyerNumber(buyerNumber);
+		 List<Contract> filteredList = lists.stream()
+		            .filter(contract -> contract.getBuyingStatus() <= 49)
+		            .collect(Collectors.toList());
+
+		    for (Contract contract : filteredList) {
+		        Map<String, Object> contractMap = new HashMap<>();
+		        contractMap.put("contract", contract);
+
+		        Product product = contract.getProduct();
+		        String productName = product.getProductKorName();
+		        contractMap.put("productName", productName);
+
+		        contractList.add(contractMap);
+		    }
+
+		    return new ResponseEntity<>(contractList, HttpStatus.OK);
+	}
+	
+	//완료 전체 리스트
+	@GetMapping("api/get/buyingend/{buyerNumber}")
+	public ResponseEntity getBuyingend(@PathVariable("buyerNumber") Long buyerNumber) {
+		List<Map<String, Object>> contractList = new ArrayList<>();
+		
+		 List<Contract> lists = contractService.findByBuyerNumber(buyerNumber);
+		 List<Contract> filteredList = lists.stream()
+		            .filter(contract -> contract.getBuyingStatus() >= 60)
+		            .collect(Collectors.toList());
+
+		    for (Contract contract : filteredList) {
+		        Map<String, Object> contractMap = new HashMap<>();
+		        contractMap.put("contract", contract);
+
+		        Product product = contract.getProduct();
+		        String productName = product.getProductKorName();
+		        contractMap.put("productName", productName);
+
+		        contractList.add(contractMap);
+		    }
+
+		    return new ResponseEntity<>(contractList, HttpStatus.OK);
+		
+	}
+	
 
 }

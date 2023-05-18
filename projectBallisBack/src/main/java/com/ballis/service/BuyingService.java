@@ -101,4 +101,13 @@ public class BuyingService {
 			return buyingRepository.save(buying);
 		}
 
+	
+
+	public List<Buying> finByMemberMemberNumber(Long memberNumber) {
+		return buyingRepository.findByMemberMemberNumber(memberNumber);
+	}
+
+	public List<Buying> findBuyingByMemberMemberNumberAndRegistDateBetween(Long memberNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+			return buyingRepository.findBuyingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
+	}
 }
