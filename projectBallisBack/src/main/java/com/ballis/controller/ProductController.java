@@ -80,7 +80,6 @@ public class ProductController {
 		    }
 		}
 		
-		
 		@GetMapping("/api/get/product/one")
 		public ResponseEntity<List<ProductOneDTO>> getProductOne(@RequestParam Long productid) {
 		    try {
@@ -90,22 +89,6 @@ public class ProductController {
 		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		    }
 		}
-		
-		
-		
-//		@GetMapping("/api/get/product/buy")
-//		public ResponseEntity<List<ProductBuyDTO>> getProductSelection(@RequestParam Long productid) {
-//		    try {
-//		        List<ProductBuyDTO> lists = productService.getProductSelection(productid);
-//		        return new ResponseEntity<>(lists, HttpStatus.OK);
-//		    } catch (Exception e) {
-//		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//		    }
-//		}
-	//	
-		
-		
-		
 		
 		// 구매-각 사이즈별 최저가 상품 1.빠른배송, 2.일반배송, 3.둘다 존재할경우 둘중 하나, 4.둘다 존재할 경우 둘중 하나& 둘중 하나만 존재할경우 그 하나
 		@GetMapping("/api/get/product/buy")
@@ -183,12 +166,32 @@ public class ProductController {
 			            .collect(Collectors.toList());
 			}
 			
+
+			
 			ProductSearchResponseDTO resultDto = new ProductSearchResponseDTO();
 			resultDto.setProductAllList(targetList);
 			
 			return resultDto;
 		}
 		
+
+//		    List<Map<String, Object>> storage = new ArrayList<>();
+//		    for (ProductAllDTO productAllDTO : targetList) {
+//		        boolean hasStorageProduct = sellingService.hasStorageProduct(productAllDTO.getId());
+//		        Map<String, Object> storageMap = new HashMap<>();
+//		        storageMap.put("id", productAllDTO.getId());
+//		        storageMap.put("hasStorage", hasStorageProduct);
+//		        storage.add(storageMap);
+//		    }
+//
+//		    result.put("targetList", targetList);
+//		    result.put("storage", storage);
+//
+//		    ProductSearchResponseDTO resultDto = new ProductSearchResponseDTO();
+//		    resultDto.setProductAllList(targetList);
+//		    resultDto.setResult(result);
+
+
 		// 판매-대표 정보
 		@GetMapping("/api/get/product/sell")
 		public ResponseEntity<List<ProductSellDTO>> getSellingProduct(@RequestParam Long productid) {
