@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class AddressDTO {
 	
-	private Member member;
+//	private Member member;
 	private String name;
 	private String address;
 	private String subAddress;

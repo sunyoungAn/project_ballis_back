@@ -75,12 +75,12 @@ public class AddressController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-//	@GetMapping("/api/get/address/{memberNumber}") // TODO 위의 메소드와 하나로 합치기
-//	public ResponseEntity getAddress(@PathVariable("memberNumber") Long memberNumber) {
-//		Member member = memberService.findByMemberNumber(memberNumber);
-//		List<Address> lists = addressService.findByMemberMemberNumber(member.getMemberNumber());
-//		
-//		return new ResponseEntity<>(lists, HttpStatus.OK);
-//	}
+	@GetMapping("/api/get/address/{memberNumber}") // TODO 위의 메소드와 하나로 합치기
+	public ResponseEntity getMyAddress(@PathVariable("memberNumber") Long memberNumber) {
+		Member member = memberService.findByMemberNumber(memberNumber);
+		List<Address> lists = addressService.findByMemberMemberNumber(member.getMemberNumber());
+		
+		return new ResponseEntity<>(lists, HttpStatus.OK);
+	}
 
 }
