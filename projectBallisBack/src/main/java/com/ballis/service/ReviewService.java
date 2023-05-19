@@ -28,4 +28,8 @@ public class ReviewService {
 		return reviewRepository.findById(reviewid);
 	}
 
+	public Review save(Review review) {
+		return reviewRepository.save(review);
+	}
+
 }

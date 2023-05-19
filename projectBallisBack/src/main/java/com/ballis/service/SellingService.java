@@ -124,6 +124,17 @@ public class SellingService {
 		public List<Selling> findByMemberMemberNumber(Long memberNumber) {
 			return sellingRepository.findByMemberMemberNumber(memberNumber);
 		}
+		
+		public List<Selling> findByMemberMemberNumberAndInventoryDiv(Long memberNumber, int inventoryDiv) {
+			return sellingRepository.findByMemberMemberNumberAndInventoryDiv(memberNumber, inventoryDiv);
+		}
+
+
+		public List<Selling> findSellingByMemberMemberNumberAndRegistDateBetween(Long memberNumber,
+				LocalDateTime startDateTime, LocalDateTime endDateTime) {
+			return sellingRepository.findSellingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
+		}
+
 	
 	
 

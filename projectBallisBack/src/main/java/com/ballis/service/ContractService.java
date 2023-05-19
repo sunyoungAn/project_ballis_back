@@ -97,4 +97,9 @@ public class ContractService {
 			LocalDateTime endDateTime) {
 		return contractRepository.findByBuyerNumberAndRegistDateBetween(buyerNumber, startDateTime, endDateTime);
 	}
+	
+	public List<Contract> findBySellerNumberAndRegistDateBetween(Long sellerNumber, LocalDateTime startDateTime,
+			LocalDateTime endDateTime) {
+		return contractRepository.findBySellerNumberAndRegistDateBetween(sellerNumber, startDateTime, endDateTime);
+	}
 }
