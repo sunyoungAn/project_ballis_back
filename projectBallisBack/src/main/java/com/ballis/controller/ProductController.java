@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +38,9 @@ import com.ballis.service.SellingService;
 
 @RestController
 public class ProductController {
+	
+	@Value("${projectBallisBack.upload.path}")
+	private String downloadPath;
 	
 	@Autowired
 	private ProductService productService;
@@ -215,15 +219,14 @@ public class ProductController {
 		 */
 		@GetMapping("/api/product/display")
 		public ResponseEntity<Resource> displayImage(@RequestParam("name") String pathName) {
-			String path = "C:\\Temp\\productimage\\";
 			String folder = "";
-			Resource resource = new FileSystemResource(path + folder + pathName);
+			Resource resource = new FileSystemResource(downloadPath + folder + pathName);
 			if(!resource.exists()) 
 				return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
 			HttpHeaders header = new HttpHeaders();
 			Path filePath = null;
 			try{
-				filePath = Paths.get(path + folder + pathName);
+				filePath = Paths.get(downloadPath + folder + pathName);
 				header.add("Content-type", Files.probeContentType(filePath));
 			}catch(IOException e) {
 				e.printStackTrace();

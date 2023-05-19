@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +37,9 @@ import com.ballis.specification.InquirySpecification;
 
 @RestController
 public class AdminInquiryController {
+	
+	@Value("${projectBallisBack.inquiry.path}")
+	private String downloadPath;
 	
 	@Autowired
 	private AdminInquiryService adminInquiryService;
@@ -119,10 +123,9 @@ public class AdminInquiryController {
 	 */
 	@GetMapping("/api/download")
 	public ResponseEntity<Resource> download(@RequestParam("pathName") String pathName) throws IOException {
-		String strPath = "C:\\Temp\\imageupload\\"; // TODO 위치 설정 바꿀 것
 		String folder = "";
 
-		Path path = Paths.get(strPath + folder + pathName);
+		Path path = Paths.get(downloadPath + folder + pathName);
 		
 	    String contentType = Files.probeContentType(path);
 		// header를 통해서 다운로드 되는 파일의 정보를 설정한다.

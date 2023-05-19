@@ -28,8 +28,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class AdminInquiryService {
 	
-	// TODO 위치설정 바꿀것
-	@Value("${projectBallisBack.upload.path}")
+	@Value("${projectBallisBack.inquiry.path}")
 	private String uploadPath;
 	
 	@Autowired

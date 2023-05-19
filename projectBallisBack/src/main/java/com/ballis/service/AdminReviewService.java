@@ -26,8 +26,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class AdminReviewService {
 	
-	// TODO 업로드 위치 설정할 것
-	@Value("${projectBallisBack.upload.path}")
+	@Value("${projectBallisBack.review.path}")
 	private String uploadPath;
 	
 	@Autowired
