@@ -205,7 +205,9 @@ public class BuyingController {
 
 		        Product product = contract.getProduct();
 		        String productName = product.getProductKorName();
+		        Long productId = product.getId();
 		        contractMap.put("productName", productName);
+		        contractMap.put("productId", productId);
 
 		        contractList.add(contractMap);
 		    }

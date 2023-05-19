@@ -97,7 +97,7 @@ public class ReviewController {
 		}
 		
 		//리뷰작성
-		@PostMapping("/api/add/review/{productId}")
+		@PostMapping("/api/add/review")
 		public ResponseEntity addReview(@RequestParam("imagePath") MultipartFile imagePath, @RequestParam("memberNumber") Long memberNumber,
 										@RequestParam("productId") Long productId, @RequestParam("content") String content,
 										@RequestParam("dataStatus") Integer dataStatus, @RequestParam("pageDiv") Integer pageDiv,
@@ -111,6 +111,7 @@ public class ReviewController {
 
 			Member member = memberService.findByMemberNumber(memberNumber);
 			Product product = productService.findById(productId);
+			
 			
 			Review review = new Review();
 			review.setMember(member);
