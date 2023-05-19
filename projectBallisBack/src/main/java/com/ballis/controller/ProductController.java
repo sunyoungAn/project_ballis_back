@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ballis.model.Image;
 import com.ballis.model.DTO.ProductAllDTO;
 import com.ballis.model.DTO.ProductBuyListDTO;
 import com.ballis.model.DTO.ProductFilterDTO;
@@ -33,6 +34,7 @@ import com.ballis.model.DTO.ProductOneDTO;
 import com.ballis.model.DTO.ProductPopDTO;
 import com.ballis.model.DTO.ProductSearchResponseDTO;
 import com.ballis.model.DTO.ProductSellDTO;
+import com.ballis.service.ImageService;
 import com.ballis.service.ProductService;
 import com.ballis.service.SellingService;
 
@@ -46,6 +48,8 @@ public class ProductController {
 	private ProductService productService;
 	@Autowired
 	private SellingService sellingService;
+	@Autowired
+	private ImageService imageService;
 	
 	// 메인 - 발매일 순 조회 & 빠른배송 여부 확인
 		@GetMapping("/api/get/product/new")
@@ -91,6 +95,7 @@ public class ProductController {
 		    }
 		}
 		
+		// 상품정보 & 대표 이미지 하나만 불러올때
 		@GetMapping("/api/get/product/one")
 		public ResponseEntity<List<ProductOneDTO>> getProductOne(@RequestParam Long productid) {
 		    try {
@@ -100,6 +105,23 @@ public class ProductController {
 		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		    }
 		}
+		// 상품정보 & 대표 이미지 여러개 불러올때
+		@GetMapping("/api/get/product/one/images")
+		public ResponseEntity<Map<String, Object>> getProductOneWithImages(@RequestParam Long productid) {
+		    try {
+		        List<ProductOneDTO> dto = productService.getProductOne(productid);
+		        List<Image> targetImages = imageService.findByTargetIdAndPageDiv(productid, 1);
+		        
+		        Map<String, Object> result = new HashMap<>();
+		        result.put("product", dto);
+		        result.put("images", targetImages);
+		        
+		        return new ResponseEntity<>(result, HttpStatus.OK);
+		    } catch (Exception e) {
+		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		    }
+		}
+		
 		
 		// 구매-각 사이즈별 최저가 상품 1.빠른배송, 2.일반배송, 3.둘다 존재할경우 둘중 하나, 4.둘다 존재할 경우 둘중 하나& 둘중 하나만 존재할경우 그 하나
 		@GetMapping("/api/get/product/buy")

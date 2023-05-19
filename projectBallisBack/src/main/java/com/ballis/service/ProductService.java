@@ -46,10 +46,6 @@ public class ProductService {
 	public List<ProductAllDTO> getProductAll(Integer sort) {
 		return productRepository.getProductAll(sort);	
 	}
-
-//	public List<ProductBuyDTO> getProductSelection(Long productid) {
-//		return productRepository.getProductSelection(productid);	
-//	}
 	
 	// 빠른 배송 상품 중 각 사이즈별 최저가 데이터만 출력
 	public List<ProductBuyDTO> getFastProduct(Long productid) {
@@ -110,7 +106,6 @@ public class ProductService {
 	    }
 		return result;
 	}
-	
 
 	public List<ProductMethodDTO> getProductBySize(Long productid, Integer size) {
 		return productRepository.getProductBySize(productid, size);
@@ -120,7 +115,5 @@ public class ProductService {
 	public List<ProductSellDTO> getSellingProduct(Long productid) {
 		return productRepository.getSellingProduct(productid);
 	}
-	
-	// 빠른 배송 상품 존재하는지
 
 }
