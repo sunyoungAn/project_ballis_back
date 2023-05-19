@@ -33,4 +33,8 @@ public class WishService {
 		return wishRepository.findProductIdByMemberMemberNumber(memberNumber);
 	}
 
+	public Wish save(Wish wish) {
+		return wishRepository.save(wish);
+	}
+
 }

@@ -45,4 +45,8 @@ public class ImageService {
 	    imageRepository.deleteByTargetId(targetId);
 	}
 
+	public List<Image> findByTargetIdAndPageDiv(Long productId, int i) {
+		return imageRepository.findByTargetIdAndPageDiv(productId,i);
+	}
+
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,9 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 public class InquiryController {
 	
+	@Value("${projectBallisBack.inquiry.path}")
+	private String uploadPath;
+	
 	@Autowired
 	private InquiryService inquiryService;
 	
@@ -56,9 +60,8 @@ public class InquiryController {
 									@RequestParam("targetId")Long targetId, @RequestParam("mainImageDiv") Integer mainImageDiv) throws IllegalStateException, IOException{
 		
 		String uuid = UUID.randomUUID().toString();
-		String uploadLocation = "c:\\Temp\\upload";
 		String filename = uuid + imagePath.getOriginalFilename();
-		File file = new File(uploadLocation + "\\" + filename);
+		File file = new File(uploadPath + "\\" + filename);
 		imagePath.transferTo(file);
 
 		Member member = memberService.findByMemberNumber(memberNumber);
@@ -92,10 +95,9 @@ public class InquiryController {
 	//이미지 불러오기
 	@GetMapping("/api/inquiry/display/image")
 	public ResponseEntity<Resource> displayImage(@ModelAttribute Image image){
-		String path = "C:\\Temp\\upload\\";
 		String folder = "";
 //		Resource resource = new FileSystemResource(path + folder + dto.getUuid()+"_"+dto.getFileName());
-		Resource resource = new FileSystemResource(path + folder + image.getImagePath());
+		Resource resource = new FileSystemResource(uploadPath + folder + image.getImagePath());
 		if(!resource.exists()) {
 			return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
 		}
@@ -103,7 +105,7 @@ public class InquiryController {
 		Path imagePath = null;
 		try {
 //			imagePath = Paths.get(path + folder + dto.getUuid()+"_"+dto.getFileName());
-			imagePath = Paths.get(path + folder + image.getImagePath());
+			imagePath = Paths.get(uploadPath + folder + image.getImagePath());
 			header.add("Content-type", Files.probeContentType(imagePath));
 		}catch(IOException e) {
 			e.printStackTrace();
@@ -132,7 +134,7 @@ public class InquiryController {
 			return ResponseEntity.notFound().build();
 		}
 		
-		List<Image> image = imageService.findByTargetId(targetId);
+		List<Image> image = imageService.findByTargetIdAndPageDiv(targetId, 3);
 		
 		return new ResponseEntity<>(Map.of("inquiry", inquiry, "image", image), HttpStatus.OK);
 		

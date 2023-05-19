@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,9 @@ import com.ballis.service.ReviewService;
 
 @RestController
 public class ReviewController {
+	
+	@Value("${projectBallisBack.review.path}")
+	private String uploadPath;
 	
 	@Autowired
 	private ReviewService reviewService;
@@ -104,9 +108,8 @@ public class ReviewController {
 										@RequestParam("targetId")Long targetId, @RequestParam("mainImageDiv") Integer mainImageDiv) throws IllegalStateException, IOException{
 			
 			String uuid = UUID.randomUUID().toString();
-			String uploadLocation = "c:\\Temp\\upload";
 			String filename = uuid + imagePath.getOriginalFilename();
-			File file = new File(uploadLocation + "\\" + filename);
+			File file = new File(uploadPath + "\\" + filename);
 			imagePath.transferTo(file);
 
 			Member member = memberService.findByMemberNumber(memberNumber);
