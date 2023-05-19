@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -49,57 +51,57 @@ public class ReviewController {
 	private ProductService productService;
 	
 	// 메인 - 전체 리뷰 출력
-		@GetMapping("/api/get/review/all")
-		public ResponseEntity<List<ReviewDTO>> getReviewAll() {
-		    try {
-		        List<ReviewDTO> reviews = reviewService.getReviewAll();
-		        return new ResponseEntity<>(reviews, HttpStatus.OK);
-		    } catch (Exception e) {
-		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		    }
-		}
+	@GetMapping("/api/get/review/all")
+	public ResponseEntity<List<ReviewDTO>> getReviewAll() {
+	    try {
+	        List<ReviewDTO> reviews = reviewService.getReviewAll();
+	        return new ResponseEntity<>(reviews, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+	
+	// 상세 - 한 상품에 해당하는 리뷰 출력
+	@GetMapping("/api/get/review/product")
+	public ResponseEntity<List<ReviewDTO>> getReviewOneProduct(@RequestParam Long productid) {
+	    try {
+	        List<ReviewDTO> reviews = reviewService.getReviewOneProduct(productid);
+	        return new ResponseEntity<>(reviews, HttpStatus.OK);
+	    } catch (Exception e) {
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+	
+	// 리뷰 1개 데이터 수신
+	@GetMapping("/api/get/review/one")
+	public ResponseEntity<List<ReviewDTO>> getReviewOne(@RequestParam Long reviewid) {
 		
-		// 상세 - 한 상품에 해당하는 리뷰 출력
-		@GetMapping("/api/get/review/product")
-		public ResponseEntity<List<ReviewDTO>> getReviewOneProduct(@RequestParam Long productid) {
-		    try {
-		        List<ReviewDTO> reviews = reviewService.getReviewOneProduct(productid);
-		        return new ResponseEntity<>(reviews, HttpStatus.OK);
-		    } catch (Exception e) {
-		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		    }
-		}
+		Optional<Review> review = reviewService.findById(reviewid);
+		List<Image> images = imageService.findByTargetIdAndPageDiv(reviewid,2);		
 		
-		//리뷰 1개 데이터 수신
-		@GetMapping("/api/get/review/one")
-		public ResponseEntity<List<ReviewDTO>> getReviewOne(@RequestParam int reviewid) {
-			
-			List<Review> reviews = reviewService.findById(reviewid);
-			List<Image> images = imageService.findByTargetIdAndPageDiv(reviewid,2);
-			
-			List<ReviewDTO> reviewDTOs = new ArrayList<>();
+		List<ReviewDTO> reviewDTOs = new ArrayList<>();
+		
+		Product product = review.get().getProduct();
+	    List<Image> matchedImages = images.stream()
+	        .filter(i -> i.getTargetId() == review.get().getId())
+	        .collect(Collectors.toList());
+	    
+	    for (Image image : matchedImages) {
+	        ReviewDTO reviewDTO = new ReviewDTO();
+	        reviewDTO.setReviewId(review.get().getId());
+	        reviewDTO.setContent(review.get().getContent());
+	        reviewDTO.setName(review.get().getName());
+	        reviewDTO.setImagePath(image.getImagePath());
+	        reviewDTO.setMainImageDiv(image.getMainImageDiv());
+	        reviewDTO.setImageId(image.getId());
+	        reviewDTO.setProductId(product.getId());	        
+	        reviewDTOs.add(reviewDTO);
+	    }
+		
+		return new ResponseEntity<List<ReviewDTO>>(reviewDTOs,HttpStatus.OK);
+	}
+	
 
-			for (Review review : reviews) {
-				Product product = review.getProduct();
-			    List<Image> matchedImages = images.stream()
-			        .filter(i -> i.getTargetId() == review.getId())
-			        .collect(Collectors.toList());
-			    
-			    for (Image image : matchedImages) {
-			        ReviewDTO reviewDTO = new ReviewDTO();
-			        reviewDTO.setReviewId(review.getId());
-			        reviewDTO.setContent(review.getContent());
-			        reviewDTO.setName(review.getName());
-			        reviewDTO.setImagePath(image.getImagePath());
-			        reviewDTO.setMainImageDiv(image.getMainImageDiv());
-			        reviewDTO.setImageId(image.getId());
-			        reviewDTO.setProductId(product.getId());	        
-			        reviewDTOs.add(reviewDTO);
-			    }
-			}
-			return new ResponseEntity<List<ReviewDTO>>(reviewDTOs,HttpStatus.OK);
-		}
-		
 		//리뷰작성
 		@PostMapping("/api/add/review")
 		public ResponseEntity addReview(@RequestParam("imagePath") MultipartFile imagePath, @RequestParam("memberNumber") Long memberNumber,
@@ -139,5 +141,73 @@ public class ReviewController {
 			
 			return new ResponseEntity<>(Map.of("Review", result, "image", result1), HttpStatus.OK);
 		}
+		
+	// 왼쪽으로 리뷰 넘길때
+	@GetMapping("/api/get/review/left")
+    public ResponseEntity<Map<String, Object>> getLeftReview(@RequestParam Long reviewId, @RequestParam(value="productId", required=false) Long productId) {
+    	
+		Review targetReview;
+		if(productId != null) {
+    		targetReview = reviewService.getLeftReviewProduct(reviewId, productId);
+    	} else {
+       		targetReview = reviewService.getLeftReview(reviewId);
+    	}
+    	
+    	if(targetReview != null) {
+    		List<Image> targetImages = imageService.findByTargetIdAndPageDiv(targetReview.getId(), 2);
+        	
+    		ReviewDTO dto = new ReviewDTO();
+        	dto.setReviewId(targetReview.getId());
+        	dto.setContent(targetReview.getContent());
+        	dto.setName(targetReview.getName());
+        	dto.setProductId(targetReview.getProduct().getId());
+        	dto.setImagePath(targetImages.get(0).getImagePath());
+        	dto.setMainImageDiv(targetImages.get(0).getMainImageDiv());
+        	dto.setImageId(targetImages.get(0).getId());
+        	
+            Map<String, Object> result = new HashMap<>();
+            result.put("review", dto);
+            result.put("images", targetImages);
+        	
+            return new ResponseEntity<>(result, HttpStatus.OK);
+    		
+    	} else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);	
+    	}
+    }
+	
+	// 오른쪽으로 리뷰 넘길때
+	@GetMapping("/api/get/review/right")
+    public ResponseEntity<Map<String, Object>> getRightReview(@RequestParam Long reviewId, @RequestParam(value="productId", required=false) Long productId) {
+		
+		Review targetReview;
+		if(productId != null) {
+    		targetReview = reviewService.getRightReviewProduct(reviewId, productId);
+    	} else {
+       		targetReview = reviewService.getRightReview(reviewId);
+    	}
+    	
+    	if(targetReview != null) {
+    		List<Image> targetImages = imageService.findByTargetIdAndPageDiv(targetReview.getId(), 2);
+        	
+    		ReviewDTO dto = new ReviewDTO();
+        	dto.setReviewId(targetReview.getId());
+        	dto.setContent(targetReview.getContent());
+        	dto.setName(targetReview.getName());
+        	dto.setProductId(targetReview.getProduct().getId());
+        	dto.setImagePath(targetImages.get(0).getImagePath());
+        	dto.setMainImageDiv(targetImages.get(0).getMainImageDiv());
+        	dto.setImageId(targetImages.get(0).getId());
+        	
+            Map<String, Object> result = new HashMap<>();
+            result.put("review", dto);
+            result.put("images", targetImages);
+        	
+            return new ResponseEntity<>(result, HttpStatus.OK);
+    		
+    	} else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);	
+    	}
+    }
 
 }

@@ -16,8 +16,7 @@ public interface ImageRepository  extends JpaRepository<Image, Long> {
 	// 관리자기능 - 인덱스와 구분으로 검색하기
 	Image findByIdAndPageDiv(Long id, Integer i);
 	
-	// TODO 언니에게 productid가 int 여도 되는지 확인
-	List<Image> findByTargetIdAndPageDiv(int productid, int i);
+	List<Image> findByTargetIdAndPageDiv(Long reviewId, int i);
 	
 	String save(MultipartFile image);
 

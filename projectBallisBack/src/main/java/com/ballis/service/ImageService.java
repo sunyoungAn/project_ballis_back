@@ -17,8 +17,8 @@ public class ImageService {
 	@Autowired
 	private ImageRepository imageRepository;
 
-	public List<Image> findByTargetIdAndPageDiv(int productid, int i) {
-		return imageRepository.findByTargetIdAndPageDiv(productid,i);
+	public List<Image> findByTargetIdAndPageDiv(Long reviewId, int i) {
+		return imageRepository.findByTargetIdAndPageDiv(reviewId, i);
 	}
 	
 	public Image save(Image addImage) {
@@ -44,9 +44,4 @@ public class ImageService {
 	public void deleteByTargetId(Long targetId) {
 	    imageRepository.deleteByTargetId(targetId);
 	}
-
-	public List<Image> findByTargetIdAndPageDiv(Long productId, int i) {
-		return imageRepository.findByTargetIdAndPageDiv(productId,i);
-	}
-
 }
