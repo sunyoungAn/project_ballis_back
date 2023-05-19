@@ -1,6 +1,7 @@
 package com.ballis.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,22 @@ public class ReviewService {
 		return reviewRepository.getReviewOneProduct(productid);
 	}
 
-	public List<Review> findById(int reviewid) {
+	public Optional<Review> findById(Long reviewid) {
 		return reviewRepository.findById(reviewid);
 	}
 
 	public Review save(Review review) {
 		return reviewRepository.save(review);
 	}
+	
+	// 왼쪽 리뷰 선택
+    public Review getLeftReview(Long reviewid) {
+        return reviewRepository.findFirstByIdGreaterThanOrderByIdAsc(reviewid);
+    }
+    
+    // 오른쪽 리뷰 선택
+    public Review getRightReview(Long reviewid) {
+        return reviewRepository.findFirstByIdLessThanOrderByIdDesc(reviewid);
+    }
 
 }

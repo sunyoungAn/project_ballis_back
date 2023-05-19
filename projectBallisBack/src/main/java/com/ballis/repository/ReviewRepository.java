@@ -18,7 +18,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
 			+ "FROM Review r "
 			+ "INNER JOIN Image i ON r.id = i.targetId "
 			+ "INNER JOIN Product p ON r.product = p.id "
-			+ "WHERE r.dataStatus = 1 AND i.pageDiv = 2",
+			+ "WHERE r.dataStatus = 1 AND i.pageDiv = 2 "
+			+ "ORDER BY r.id DESC",
 			nativeQuery = false) 
 	List<ReviewDTO> getReviewAll();
 
@@ -28,10 +29,15 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
 			+ "FROM Review r "
 			+ "INNER JOIN Image i ON r.id = i.targetId "
 			+ "INNER JOIN Product p ON r.product = p.id "
-			+ "WHERE r.dataStatus = 1 AND i.pageDiv = 2 AND p.id = :productid",
+			+ "WHERE r.dataStatus = 1 AND i.pageDiv = 2 AND p.id = :productid "
+			+ "ORDER BY r.id DESC",
 			nativeQuery = false) 
 	List<ReviewDTO> getReviewOneProduct(@Param("productid") Long producid);
 	
-	List<Review> findById(int reviewid);
+	// 변수로 받은 reviewId와 가까우면서 큰 revieId 찾기
+	Review findFirstByIdGreaterThanOrderByIdAsc(Long reviewId);
+	
+	// 변수로 받은 reviewId와 가까우면서 작은 revieId 찾기
+	Review findFirstByIdLessThanOrderByIdDesc(Long reviewId);
 
 }
