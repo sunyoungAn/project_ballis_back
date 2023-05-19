@@ -1,5 +1,9 @@
 package com.ballis.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +12,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -201,6 +208,27 @@ public class ProductController {
 		    } catch (Exception e) {
 		        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		    }
+		}
+		
+		/*
+		 * 이미지 불러오기
+		 */
+		@GetMapping("/api/product/display")
+		public ResponseEntity<Resource> displayImage(@RequestParam("name") String pathName) {
+			String path = "C:\\Temp\\productimage\\";
+			String folder = "";
+			Resource resource = new FileSystemResource(path + folder + pathName);
+			if(!resource.exists()) 
+				return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+			HttpHeaders header = new HttpHeaders();
+			Path filePath = null;
+			try{
+				filePath = Paths.get(path + folder + pathName);
+				header.add("Content-type", Files.probeContentType(filePath));
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 		}
 
 }
