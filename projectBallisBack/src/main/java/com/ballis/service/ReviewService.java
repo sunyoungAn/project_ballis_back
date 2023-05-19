@@ -38,9 +38,17 @@ public class ReviewService {
         return reviewRepository.findFirstByIdGreaterThanOrderByIdAsc(reviewid);
     }
     
+    public Review getLeftReviewProduct(Long reviewid, Long productid) {
+    	return reviewRepository.findFirstByIdAndProductIdGreaterThanOrderByIdAsc(reviewid, productid);
+    }
+    
     // 오른쪽 리뷰 선택
     public Review getRightReview(Long reviewid) {
         return reviewRepository.findFirstByIdLessThanOrderByIdDesc(reviewid);
+    }
+    
+    public Review getRightReviewProduct(Long reviewid, Long productid) {
+    	return reviewRepository.findFirstByIdAndProductIdLessThanOrderByIdDesc(reviewid, productid);
     }
 
 }

@@ -140,8 +140,14 @@ public class ReviewController {
 		
 	// 왼쪽으로 리뷰 넘길때
 	@GetMapping("/api/get/review/left")
-    public ResponseEntity<Map<String, Object>> getLeftReview(@RequestParam Long reviewId) {
-    	Review targetReview = reviewService.getLeftReview(reviewId);
+    public ResponseEntity<Map<String, Object>> getLeftReview(@RequestParam Long reviewId, @RequestParam(value="productId", required=false) Long productId) {
+    	
+		Review targetReview;
+		if(productId != null) {
+    		targetReview = reviewService.getLeftReviewProduct(reviewId, productId);
+    	} else {
+       		targetReview = reviewService.getLeftReview(reviewId);
+    	}
     	
     	if(targetReview != null) {
     		List<Image> targetImages = imageService.findByTargetIdAndPageDiv(targetReview.getId(), 2);
@@ -168,8 +174,14 @@ public class ReviewController {
 	
 	// 오른쪽으로 리뷰 넘길때
 	@GetMapping("/api/get/review/right")
-    public ResponseEntity<Map<String, Object>> getRightReview(@RequestParam Long reviewId) {
-    	Review targetReview = reviewService.getRightReview(reviewId);
+    public ResponseEntity<Map<String, Object>> getRightReview(@RequestParam Long reviewId, @RequestParam(value="productId", required=false) Long productId) {
+    	
+		Review targetReview;
+		if(productId != null) {
+    		targetReview = reviewService.getRightReviewProduct(reviewId, productId);
+    	} else {
+       		targetReview = reviewService.getRightReview(reviewId);
+    	}
     	
     	if(targetReview != null) {
     		List<Image> targetImages = imageService.findByTargetIdAndPageDiv(targetReview.getId(), 2);
