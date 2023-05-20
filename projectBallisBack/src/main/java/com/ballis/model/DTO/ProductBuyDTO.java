@@ -11,9 +11,6 @@ public class ProductBuyDTO {
 	private String productEngName;
 	private String productKorName;
 	private String modelNumber;
-	private Integer sizeMin;
-	private Integer sizeMax;
-	private Integer sizeUnit;
 	
 	private String imagePath;
 	

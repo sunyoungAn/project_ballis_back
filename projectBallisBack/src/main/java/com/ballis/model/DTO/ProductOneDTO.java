@@ -18,6 +18,9 @@ public class ProductOneDTO {
 	private String color;
 	private LocalDate launchingDate;
 	private Integer launchingPrice;
+	private Integer sizeMin;
+	private Integer sizeMax;
+	private Integer sizeUnit;
 	
 	private String imagePath;
 	

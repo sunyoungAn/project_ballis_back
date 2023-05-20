@@ -11,9 +11,6 @@ public class ProductSellDTO {
 	private String productEngName;
 	private String productKorName;
 	private String modelNumber;
-	private Integer sizeMin;
-	private Integer sizeMax;
-	private Integer sizeUnit;
 	
 	private String imagePath;
 
@@ -22,7 +19,5 @@ public class ProductSellDTO {
 	private Integer buyWishPrice;
 	private Long buyerNumber;
 	private Long buyingId;
-	
-//	private Integer inventoryDiv;
 
 }
