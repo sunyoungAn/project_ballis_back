@@ -229,40 +229,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 	        ,nativeQuery = false)
 	List<ProductSellDTO> getSellingProduct(@Param("productid") Long productid);
 	
-//	// 전체 판매상품 리스트 이름검색 1
-//	@Query(value="SELECT "
-//			+ "new com.ballis.model.DTO.ProductAllDTO"
-//			+ "(prod.id, prod.productEngName, prod.productKorName, MAX(img.imagePath), bd.brandName, "
-//			+ "sell.wishPrice, sell.inventoryDiv, COUNT(DISTINCT wi.id), COUNT(DISTINCT re.id), "
-//			+ "prod.category, prod.gender, prod.brand.id, sell.productSize, prod.launchingDate, COUNT(DISTINCT con.id)) "
-//			+ "FROM Product prod "
-//            + "INNER JOIN Image img ON prod.id = img.targetId AND img.pageDiv = 1 AND img.mainImageDiv = 1 "
-//            + "INNER JOIN Brand bd ON prod.brand = bd.brandId "
-//            + "LEFT JOIN Selling sell ON prod.id = sell.product "
-//            + "AND NOT (sell.sellingStatus = 99 OR sell.sellingStatus = 18) "
-//            + "LEFT JOIN Wish wi ON prod.id = wi.product "
-//            + "LEFT JOIN Review re ON prod.id = re.product "
-//            + "LEFT JOIN Contract con ON prod.id = con.product "
-//            + "WHERE (sell.wishPrice IS NULL OR "
-//            + "sell.wishPrice = ("
-//            + "SELECT MIN(wishPrice) "
-//            + "FROM Selling "
-//            + "WHERE product = prod.id AND NOT (sellingStatus = 99 OR sellingStatus = 18))) "
-//            + "AND (sell.inventoryDiv IS NULL OR sell.inventoryDiv = 1 OR "
-//            + "(sell.inventoryDiv = 2 AND NOT EXISTS "
-//            + "(SELECT 1 FROM Selling subSell WHERE prod.id = subSell.product "
-//            + "AND sell.wishPrice = subSell.wishPrice "
-//            + "AND subSell.inventoryDiv = 1 "
-//            + "AND NOT (subSell.sellingStatus = 99 OR subSell.sellingStatus = 18)))) "
-//            + "AND (prod.productEngName Like %:name% OR prod.productKorName Like %:name%) "
-//            + "GROUP BY prod.id, prod.productEngName, prod.productKorName, bd.brandName, sell.wishPrice, sell.inventoryDiv, "
-//            + "prod.category, prod.gender, prod.brand, sell.productSize "
-//            + "ORDER BY "
-//			+ "COUNT(DISTINCT con.id) DESC", 
-//		    nativeQuery = false)
-//		List<ProductAllDTO> searchProduct(@Param("name") String name);
-	
-	// 전체 판매상품 리스트
+	// 전체 판매상품 리스트(검색어 있는 경우)
 		@Query(value="SELECT "
 				+ "new com.ballis.model.DTO.ProductAllDTO"
 				+ "(prod.id, prod.productEngName, prod.productKorName, MAX(img.imagePath), bd.brandName, "
@@ -287,7 +254,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 	            + "AND sell.wishPrice = subSell.wishPrice "
 	            + "AND subSell.inventoryDiv = 1 "
 	            + "AND NOT (subSell.sellingStatus = 99 OR subSell.sellingStatus = 18)))) "
-	            + "AND (prod.productEngName Like %:name% OR prod.productKorName Like %:name%) "
+	            + "AND (prod.productEngName Like %:searchword% OR prod.productKorName Like %:searchword% OR prod.modelNumber Like %:searchword% OR bd.brandName Like %:searchword%) "
 	            + "GROUP BY prod.id, prod.productEngName, prod.productKorName, bd.brandName, sell.wishPrice, sell.inventoryDiv, "
 	            + "prod.category, prod.gender, prod.brand, sell.productSize "
 	            + "ORDER BY "
@@ -301,7 +268,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 			    + "WHEN 4 THEN COUNT(DISTINCT re.id) END DESC, "
 				+ "COUNT(DISTINCT con.id) DESC", 
 			    nativeQuery = false)
-		List<ProductAllDTO> searchProduct2(@Param("sort") Integer sort, @Param("name") String name);
+		List<ProductAllDTO> searchProduct(@Param("sort") Integer sort, @Param("searchword") String searchword);
 	
 	
 

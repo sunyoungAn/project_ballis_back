@@ -47,12 +47,9 @@ public class ProductService {
 		return productRepository.getProductAll(sort);	
 	}
 	
-//	public List<ProductAllDTO> searchProduct(String name) {
-//		return productRepository.searchProduct(name);	
-//	}
 	
-	public List<ProductAllDTO> searchProduct2(Integer sort, String name) {
-		return productRepository.searchProduct2(sort, name);	
+	public List<ProductAllDTO> searchProduct(Integer sort, String searchword) {
+		return productRepository.searchProduct(sort, searchword);	
 	}
 	
 	// 빠른 배송 상품 중 각 사이즈별 최저가 데이터만 출력

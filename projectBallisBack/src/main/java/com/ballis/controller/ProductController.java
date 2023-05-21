@@ -148,12 +148,13 @@ public class ProductController {
 		
 		// 상품 전체 리스트
 		@PostMapping("/api/get/product/all")
-		public ProductSearchResponseDTO search(@RequestBody ProductFilterDTO filterdto, @RequestParam Integer sort, @RequestParam(value="searchword", required=false) String searchWord) {
+		public ProductSearchResponseDTO search(@RequestBody ProductFilterDTO filterdto, @RequestParam Integer sort, @RequestParam(value="searchword", required=false) String searchword) {
 			
 			List<ProductAllDTO> targetList = new ArrayList<>();
 			
-			if(searchWord != null && searchWord != "") {
-				targetList = productService.searchProduct2(sort, searchWord);
+			if(searchword != null && searchword != "") {
+				// 검색어가 있는 경우
+				targetList = productService.searchProduct(sort, searchword);
 			} else {
 				// sort값에 따라 정렬
 				targetList = productService.getProductAll(sort);
@@ -259,78 +260,6 @@ public class ProductController {
 			}
 			return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 		}
-		// TODO 삭제
-//		/*
-//		 * 헤더 검색
-//		 */
-//		@GetMapping("/api/search/product")
-//		public ProductSearchResponseDTO searchProduct(@RequestParam String name) {
-//			
-//			List<ProductAllDTO> targetList = new ArrayList<>();
-//
-//			targetList = productService.searchProduct(name);
-//
-//			ProductSearchResponseDTO resultDto = new ProductSearchResponseDTO();
-//			resultDto.setProductAllList(targetList);
-//			
-//			return resultDto;
-//		}
-		
-//		// 상품 전체 리스트
-//		@PostMapping("/api/search/product")
-//		public ProductSearchResponseDTO search2(@RequestBody ProductFilterDTO filterdto, @RequestParam("sort") Integer sort, @RequestParam(value="searchword", required=false) String searchWord) {
-//
-//			List<ProductAllDTO> targetList = new ArrayList<>();
-//
-//			// sort값에 따라 정렬
-//			targetList = productService.searchProduct2(sort, searchWord);
-//
-//			// 필터링-카테고리
-//			if (!filterdto.getCategoryList().isEmpty()) {
-//				targetList = targetList.stream()
-//						.filter(product -> filterdto.getCategoryList().contains(product.getCategory()))
-//						.collect(Collectors.toList());
-//			}
-//			// 필터링-성별
-//			if (!filterdto.getGenderList().isEmpty()) {
-//				targetList = targetList.stream()
-//						.filter(product -> filterdto.getGenderList().contains(product.getGender()))
-//						.collect(Collectors.toList());
-//			}
-//			// 필터링-브랜드
-//			if (!filterdto.getBrandIdList().isEmpty()) {
-//				targetList = targetList.stream()
-//						.filter(product -> filterdto.getBrandIdList().contains(product.getBrandId()))
-//						.collect(Collectors.toList());
-//			}
-//			// 필터링-보관상태
-//			if (!filterdto.getInventoryDivList().isEmpty()) {
-//				targetList = targetList.stream()
-//						.filter(product -> filterdto.getInventoryDivList().contains(product.getInventoryDiv()))
-//						.collect(Collectors.toList());
-//			}
-//			// 필터링-사이즈
-//			if (!filterdto.getSizeList().isEmpty()) {
-//				targetList = targetList.stream().filter(product -> filterdto.getSizeList().contains(product.getSize()))
-//						.collect(Collectors.toList());
-//			}
-//			// 필터링-가격
-//			if (!filterdto.getWishPriceList().isEmpty()) {
-//				List<Integer> wishPriceList = filterdto.getWishPriceList();
-//				int minWishPrice = Collections.min(wishPriceList);
-//				int maxWishPrice = Collections.max(wishPriceList);
-//
-//				targetList = targetList.stream().filter(product -> {
-//					int wishPrice = product.getWishPrice();
-//					return wishPrice >= minWishPrice && wishPrice <= maxWishPrice;
-//				}).collect(Collectors.toList());
-//			}
-//
-//			ProductSearchResponseDTO resultDto = new ProductSearchResponseDTO();
-//			resultDto.setProductAllList(targetList);
-//
-//			return resultDto;
-//		}
 		
 
 }
