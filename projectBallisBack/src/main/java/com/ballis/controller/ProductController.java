@@ -193,12 +193,13 @@ public class ProductController {
 			// 필터링-가격
 			if (!filterdto.getWishPriceList().isEmpty()) {
 			    List<Integer> wishPriceList = filterdto.getWishPriceList();
-			    int minWishPrice = Collections.min(wishPriceList);
-			    int maxWishPrice = Collections.max(wishPriceList);
+			    Integer minWishPrice = Collections.min(wishPriceList);
+			    Integer maxWishPrice = Collections.max(wishPriceList);
 
 			    targetList = targetList.stream()
 			            .filter(product -> {
-			                int wishPrice = product.getWishPrice();
+			                Integer wishPrice = product.getWishPrice();
+			                if(wishPrice == null) { return false;} // 희망가격이 없는 경우 제외
 			                return wishPrice >= minWishPrice && wishPrice <= maxWishPrice;
 			            })
 			            .collect(Collectors.toList());
