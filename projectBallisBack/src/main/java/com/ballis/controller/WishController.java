@@ -88,10 +88,10 @@ public class WishController {
 	}
 	
 	@PostMapping("/api/add/wish/{memberNumber}")
-	public ResponseEntity addWish(@PathVariable Long memberNumber, @RequestParam Long id) {
+	public ResponseEntity addWish(@PathVariable Long memberNumber, @RequestParam Long productid ) {
 		
 		Member member = memberService.findByMemberNumber(memberNumber);
-		Product product = productService.findById(id);
+		Product product = productService.findById(productid);
 		
 		Wish wish = new Wish();
 		wish.setMember(member);

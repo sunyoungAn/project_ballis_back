@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ballis.model.Buying;
 import com.ballis.model.Contract;
+import com.ballis.model.Image;
 import com.ballis.model.Member;
 import com.ballis.model.Product;
 import com.ballis.model.DTO.BuyingAddDTO;
 import com.ballis.model.DTO.BuyingChartDTO;
 import com.ballis.service.BuyingService;
 import com.ballis.service.ContractService;
+import com.ballis.service.ImageService;
 import com.ballis.service.MemberService;
 import com.ballis.service.ProductService;
 
@@ -43,7 +45,7 @@ public class BuyingController {
 	private MemberService memberService;
 	
 	@Autowired
-	private ProductService productService;
+	private ImageService imageService;
 	
 	@Autowired
 	private ContractService contractService;
@@ -75,14 +77,17 @@ public class BuyingController {
 	    
 	    List<Buying> lists = buyingService.findBuyingByMemberMemberNumberAndRegistDateBetween(member.getMemberNumber(), startDateTime, endDateTime);
 	    for(Buying buying : lists) {
-			Map<String, Object> buyinggMap = new HashMap<>();
-			buyinggMap.put("buying", buying);
+			Map<String, Object> buyingMap = new HashMap<>();
+			buyingMap.put("buying", buying);
 		    
 		    Product product = buying.getProduct();
+		    Long productId = product.getId();
 		    String productName = product.getProductKorName();
-		    buyinggMap.put("productName", productName);
-		        
-		    buyingList.add(buyinggMap);
+		    buyingMap.put("productName", productName);
+		    
+		    List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
+		    buyingMap.put("imagelist", imagelist);        
+		    buyingList.add(buyingMap);
 		}
 	    
 	    return new ResponseEntity<>(buyingList, HttpStatus.OK);
@@ -107,8 +112,12 @@ public class BuyingController {
 		     contractMap.put("contract", contract);
 
 		     Product product = contract.getProduct();
+		     Long productId = product.getId();
 		     String productName = product.getProductKorName();
 		     contractMap.put("productName", productName);
+		     
+		     List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
+		     contractMap.put("imagelist", imagelist);   
 
 		     contractList.add(contractMap);
 		    }
@@ -135,8 +144,12 @@ public class BuyingController {
 			contractMap.put("contract", contract);
 
 			Product product = contract.getProduct();
-			String productName = product.getProductKorName();
-			contractMap.put("productName", productName);
+			Long productId = product.getId();
+		    String productName = product.getProductKorName();
+		    contractMap.put("productName", productName);
+		     
+		    List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
+		    contractMap.put("imagelist", imagelist);  
 
 			contractList.add(contractMap);
 			}
@@ -156,8 +169,12 @@ public class BuyingController {
 			buyinggMap.put("buying", buying);
 		    
 		    Product product = buying.getProduct();
+		    Long productId = product.getId();
 		    String productName = product.getProductKorName();
 		    buyinggMap.put("productName", productName);
+		    
+		    List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
+		    buyinggMap.put("imagelist", imagelist);
 		        
 		    buyingList.add(buyinggMap);
 		}
@@ -180,8 +197,12 @@ public class BuyingController {
 		        contractMap.put("contract", contract);
 
 		        Product product = contract.getProduct();
+		        Long productId = product.getId();
 		        String productName = product.getProductKorName();
 		        contractMap.put("productName", productName);
+		        
+		        List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
+		        contractMap.put("imagelist", imagelist);
 
 		        contractList.add(contractMap);
 		    }
@@ -204,10 +225,12 @@ public class BuyingController {
 		        contractMap.put("contract", contract);
 
 		        Product product = contract.getProduct();
-		        String productName = product.getProductKorName();
 		        Long productId = product.getId();
+		        String productName = product.getProductKorName();
 		        contractMap.put("productName", productName);
-		        contractMap.put("productId", productId);
+		        
+		        List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
+		        contractMap.put("imagelist", imagelist);
 
 		        contractList.add(contractMap);
 		    }
