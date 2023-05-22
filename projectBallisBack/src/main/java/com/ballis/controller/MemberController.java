@@ -7,16 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ballis.model.Member;
+import com.ballis.model.DTO.AccountDTO;
 import com.ballis.model.DTO.LoginInfoDTO;
 import com.ballis.model.DTO.MemberDTO;
 import com.ballis.service.JwtService;
@@ -213,4 +216,40 @@ public class MemberController {
 	}
 	
 
+	//계좌등륵
+	@PostMapping("/api/add/account/{memberNumber}")
+	public ResponseEntity<Member> addAccount(@PathVariable Long memberNumber, @RequestBody AccountDTO dto) {
+		Member member = memberService.findByMemberNumber(memberNumber);
+		
+		if (member == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    member.setAccountNumber(dto.getAccountNumber());
+	    member.setDepositor(dto.getDepositor());
+	    member.setBankName(dto.getBankName());
+
+	    Member updatedMember = memberService.save(member);
+
+	    return ResponseEntity.ok(updatedMember);
+		
+	}
+	
+	//계좌삭제
+	@DeleteMapping("/api/delete/account/{memberNumber}")
+	public ResponseEntity deleteAccount(@PathVariable Long memberNumber) {
+		 Member member = memberService.findByMemberNumber(memberNumber);
+
+		    if (member == null) {
+		        return ResponseEntity.notFound().build();
+		    }
+
+		    member.setAccountNumber(null);
+		    member.setBankName(null);
+		    member.setDepositor(null);
+
+		    Member deleteAccount = memberService.save(member);
+
+		    return ResponseEntity.ok(deleteAccount);
+	}
 }
