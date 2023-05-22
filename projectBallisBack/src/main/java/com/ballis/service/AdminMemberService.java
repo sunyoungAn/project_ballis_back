@@ -2,7 +2,9 @@ package com.ballis.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -73,6 +75,11 @@ public class AdminMemberService {
 		// 주소정보
 		List<AdminAddressDTO> addressDtoList = new ArrayList<>();
 		List<Address> targetAddressList = targetMember.getAddresss();
+		
+		// 주소정보가 존재하는 경우 정렬
+		if(targetAddressList.isEmpty() == false) {
+			targetAddressList = targetAddressList.stream().sorted(Comparator.comparing(Address::getDefaultAddress)).collect(Collectors.toList());
+		}
 		
 		for(Address address : targetAddressList) {
 			AdminAddressDTO dto = new AdminAddressDTO();
