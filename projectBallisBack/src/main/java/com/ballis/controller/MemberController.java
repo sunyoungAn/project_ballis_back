@@ -193,8 +193,8 @@ public class MemberController {
 	}
 
 	// 마이페이지 회원 정보 불러오기
-	@GetMapping("/api/get/member/{memberNumber}")
-	public ResponseEntity getMemberOne(@PathVariable("memberNumber") Long memberNumber) {
+	@GetMapping("/api/get/member")
+	public ResponseEntity getMemberOne(@RequestParam("memberNumber") Long memberNumber) {
 		Member member = memberService.findByMemberNumber(memberNumber);
 
 		if (member == null) {
