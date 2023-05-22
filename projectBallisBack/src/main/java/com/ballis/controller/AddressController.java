@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ballis.model.Address;
 import com.ballis.model.Member;
 import com.ballis.model.DTO.AddressDTO;
+import com.ballis.repository.MemberRepository;
 import com.ballis.service.AddressService;
 import com.ballis.service.MemberService;
 
@@ -87,6 +88,32 @@ public class AddressController {
 		return new ResponseEntity<>(lists, HttpStatus.OK);
 	}
 	
+	//기본배송지변경
+	@PutMapping("/api/update/address/{memberNumber}/{id}")
+	public ResponseEntity updateAddress(@PathVariable("memberNumber") Long memberNumber, @PathVariable("id") Long id) {
+		
+		Member member =  memberService.findByMemberNumber(memberNumber);
+	    Address address = addressService.findById(id);
+
+	    if (member == null || address == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    // 현재 기본 배송지를 해제
+	    Address currentDefaultAddress = addressService.findByMemberMemberNumberAndDefaultAddress(member.getMemberNumber(), 1);
+	    if (currentDefaultAddress != null) {
+	        currentDefaultAddress.setDefaultAddress(2);
+	        addressService.save(currentDefaultAddress);
+	    }
+
+	    // 선택한 주소를 기본 배송지로 설정
+	    address.setDefaultAddress(1);
+	    addressService.save(address);
+
+	    return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	//주소 삭제
 	@DeleteMapping("/api/delete/address/{id}")
 	public ResponseEntity deleteAddress(@PathVariable Long id) {
 		addressService.delete(id);
