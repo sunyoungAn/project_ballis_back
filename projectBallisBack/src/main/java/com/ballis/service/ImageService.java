@@ -44,4 +44,5 @@ public class ImageService {
 	public void deleteByTargetId(Long targetId) {
 	    imageRepository.deleteByTargetId(targetId);
 	}
+
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -169,9 +170,12 @@ public class SellingController {
 		Member member = memberService.findByMemberNumber(memberNumber);
 		List<Map<String, Object>> sellingList = new ArrayList<>();
 		
-		List<Selling> lists = sellingService.findByMemberMemberNumberAndInventoryDiv(member.getMemberNumber(), inventoryDiv);			
+		List<Selling> lists = sellingService.findByMemberMemberNumberAndInventoryDiv(member.getMemberNumber(), inventoryDiv);
+		List<Selling> filteredList = lists.stream()
+	            .filter(selling -> selling.getSellingStatus() <= 20)
+	            .collect(Collectors.toList());
 				
-		for(Selling selling : lists) {
+		for(Selling selling : filteredList) {
 			Map<String, Object> sellingMap = new HashMap<>();
 		    sellingMap.put("selling", selling);
 		    
@@ -185,6 +189,13 @@ public class SellingController {
 		    sellingList.add(sellingMap);
 		}
 		return new ResponseEntity<>(sellingList, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/api/delete/selling/{id}")
+	public ResponseEntity deleteSelling(@PathVariable Long id) {
+		sellingService.delete(id);
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	//진행중 전체 리스트

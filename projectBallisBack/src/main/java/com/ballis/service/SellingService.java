@@ -135,6 +135,11 @@ public class SellingService {
 			return sellingRepository.findSellingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
 		}
 
+		public void delete(Long id) {
+			sellingRepository.deleteById(id);
+			
+		}
+
 	
 	
 

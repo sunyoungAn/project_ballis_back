@@ -178,10 +178,11 @@ public class MemberController {
 			dto.setMemberNumber(memberNumber);
 			dto.setMemberStatus(member.getMemberStatus());
 
-			return new ResponseEntity<LoginInfoDTO>(dto, HttpStatus.OK);
+			return ResponseEntity.ok(dto);
+	    }
 
-		}
-		throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	    // 로그인 실패 시 실패 응답 반환
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
 	// 로그아웃

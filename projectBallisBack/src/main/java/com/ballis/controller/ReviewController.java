@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,7 +105,7 @@ public class ReviewController {
 
 		//리뷰작성
 		@PostMapping("/api/add/review")
-		public ResponseEntity addReview(@RequestParam("imagePath") MultipartFile imagePath, @RequestParam("memberNumber") Long memberNumber,
+		public ResponseEntity addReview(@RequestParam("imagePath") MultipartFile imagePath, @RequestPart(value="subImage",required = false) List<MultipartFile> subImage, @RequestParam("memberNumber") Long memberNumber,
 										@RequestParam("productId") Long productId, @RequestParam("content") String content,
 										@RequestParam("dataStatus") Integer dataStatus, @RequestParam("pageDiv") Integer pageDiv,
 										@RequestParam("targetId")Long targetId, @RequestParam("mainImageDiv") Integer mainImageDiv) throws IllegalStateException, IOException{
@@ -113,6 +114,7 @@ public class ReviewController {
 			String filename = uuid + imagePath.getOriginalFilename();
 			File file = new File(uploadPath + "\\" + filename);
 			imagePath.transferTo(file);
+			
 
 			Member member = memberService.findByMemberNumber(memberNumber);
 			Product product = productService.findById(productId);
@@ -132,14 +134,36 @@ public class ReviewController {
 			
 			Image image = new Image();
 			image.setImagePath(filename);
-			image.setPageDiv(pageDiv);
+			image.setPageDiv(3);
 			image.setTargetId(targetId1);
-			image.setMainImageDiv(mainImageDiv);
+			image.setMainImageDiv(1);
 			image.setRegistDate(LocalDateTime.now());
 			
 			Image result1 = imageService.save(image);
 			
-			return new ResponseEntity<>(Map.of("Review", result, "image", result1), HttpStatus.OK);
+			
+			List<Image> subImageResults = new ArrayList<>();
+			if(subImage != null && !subImage.isEmpty()) {
+			    for (MultipartFile subImageFile : subImage) {
+			    	 String subImageFilename = uuid + subImageFile.getOriginalFilename();
+			         File subImageSaveFile = new File(uploadPath + "\\" + subImageFilename);
+			         subImageFile.transferTo(subImageSaveFile);
+			        
+			        Image subImages = new Image();
+			        subImages.setImagePath(subImageFilename);
+			        subImages.setPageDiv(3);
+			        subImages.setTargetId(targetId1);
+			        subImages.setMainImageDiv(2); 
+			        subImages.setRegistDate(LocalDateTime.now());
+			        
+			        Image subImageResult = imageService.save(subImages);
+			        
+			        subImageResults.add(subImageResult);
+			        
+			    }
+			}
+			
+			return new ResponseEntity<>(Map.of("Review", result, "image", result1, "subImages", subImageResults), HttpStatus.OK);
 		}
 		
 	// 왼쪽으로 리뷰 넘길때
