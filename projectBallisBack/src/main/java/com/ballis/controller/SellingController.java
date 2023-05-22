@@ -171,9 +171,19 @@ public class SellingController {
 		List<Map<String, Object>> sellingList = new ArrayList<>();
 		
 		List<Selling> lists = sellingService.findByMemberMemberNumberAndInventoryDiv(member.getMemberNumber(), inventoryDiv);
-		List<Selling> filteredList = lists.stream()
-	            .filter(selling -> selling.getSellingStatus() <= 20)
-	            .collect(Collectors.toList());
+		List<Selling> filteredList;
+
+		if (inventoryDiv == 1) {
+		    filteredList = lists.stream()
+		        .filter(selling -> selling.getSellingStatus() >= 11)
+		        .collect(Collectors.toList());
+		} else if (inventoryDiv == 2) {
+		    filteredList = lists.stream()
+		        .filter(selling -> selling.getSellingStatus() < 3)
+		        .collect(Collectors.toList());
+		} else {
+		    filteredList = new ArrayList<>();
+		}
 				
 		for(Selling selling : filteredList) {
 			Map<String, Object> sellingMap = new HashMap<>();
