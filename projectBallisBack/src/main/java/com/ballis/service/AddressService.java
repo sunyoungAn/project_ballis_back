@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ballis.model.Address;
+import com.ballis.model.Member;
 import com.ballis.repository.AddressRepository;
+
+import jakarta.transaction.Transactional;
 
 
 @Service
@@ -31,4 +34,8 @@ public class AddressService {
 		return addressRepository.countByMember_MemberNumber(memberNumber);
 	}
 
+	public void delete(Long id) {
+		addressRepository.deleteById(id);
+		
+	}
 }
