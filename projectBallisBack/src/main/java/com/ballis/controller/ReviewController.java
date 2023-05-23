@@ -2,6 +2,9 @@ package com.ballis.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +16,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -233,5 +239,25 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);	
     	}
     }
+	
+	/*
+	 * 이미지 불러오기
+	 */
+	@GetMapping("/api/review/display")
+	public ResponseEntity<Resource> displayReviewImage(@RequestParam("name") String pathName) {
+		String folder = "";
+		Resource resource = new FileSystemResource(uploadPath + folder + pathName);
+		if(!resource.exists()) 
+			return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+		HttpHeaders header = new HttpHeaders();
+		Path filePath = null;
+		try{
+			filePath = Paths.get(uploadPath + folder + pathName);
+			header.add("Content-type", Files.probeContentType(filePath));
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+	}
 
 }
