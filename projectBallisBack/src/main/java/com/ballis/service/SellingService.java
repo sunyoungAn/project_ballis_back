@@ -113,7 +113,7 @@ public class SellingService {
 		
 		// 빠른 배송 상품 존재 여부 확인
 		public boolean hasStorageProduct(Long productId) {
-		    List<Selling> sellings = sellingRepository.findByInventoryDivAndSellingStatusAndProductId(1, 11, productId);
+		    List<Selling> sellings = sellingRepository.findByInventoryDivAndSellingStatusAndProductId(1, 17, productId);
 		    return sellings != null && !sellings.isEmpty();
 		}
 
