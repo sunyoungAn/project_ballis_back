@@ -226,7 +226,7 @@ public class SellingController {
 
 	    List<Contract> lists = contractService.findBySellerNumber(sellerNumber);
 	    List<Contract> filteredList = lists.stream()
-	            .filter(contract -> contract.getSellingStatus() <= 49)
+	    		.filter(contract -> contract.getSellingStatus() == null || contract.getSellingStatus() <= 49)
 	            .collect(Collectors.toList());
 
 	    for (Contract contract : filteredList) {
