@@ -44,4 +44,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
 	
 	Review findFirstByIdAndProductIdLessThanOrderByIdDesc(Long reviewId, Long productId);
 
+	List<Review> findByProductId(Long productId);
+
 }

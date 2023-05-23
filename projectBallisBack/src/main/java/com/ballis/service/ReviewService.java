@@ -51,4 +51,13 @@ public class ReviewService {
     	return reviewRepository.findFirstByIdAndProductIdLessThanOrderByIdDesc(reviewid, productid);
     }
 
+	public List<Review> findByProductId(Long productId) {
+		return reviewRepository.findByProductId(productId);
+	}
+
+	public void delete(Long id) {
+		reviewRepository.deleteById(id);
+		
+	}
+
 }

@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.ballis.model.Member;
 import com.ballis.model.DTO.AccountDTO;
@@ -54,8 +52,7 @@ public class MemberController {
 		String name = params.get("name");
 		String phoneNumber = params.get("phoneNumber");
 		int gender = Integer.parseInt(params.get("gender"));
-		String memberStatus = params.get("memberStatus");
-
+		
 		// TODO 여기만 수정함 05/15
 //		Member joinMember = Member.builder().email(email).password(password).phoneNumber(phoneNumber).gender(gender)
 //				.memberStatus(2).name(name).registDate(LocalDateTime.now()).build();

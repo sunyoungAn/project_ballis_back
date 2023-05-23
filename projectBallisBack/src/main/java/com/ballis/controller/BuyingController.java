@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import com.ballis.model.Contract;
 import com.ballis.model.Image;
 import com.ballis.model.Member;
 import com.ballis.model.Product;
+import com.ballis.model.Review;
 import com.ballis.model.DTO.BuyingAddDTO;
 import com.ballis.model.DTO.BuyingChartDTO;
 import com.ballis.service.BuyingService;
@@ -32,6 +34,7 @@ import com.ballis.service.ContractService;
 import com.ballis.service.ImageService;
 import com.ballis.service.MemberService;
 import com.ballis.service.ProductService;
+import com.ballis.service.ReviewService;
 
 
 
@@ -49,6 +52,9 @@ public class BuyingController {
 	
 	@Autowired
 	private ContractService contractService;
+	
+	@Autowired
+	private ReviewService reviewService;
 	
 	@GetMapping("/api/get/buy/chart")
 	public List<BuyingChartDTO> findBuyingByProduct(@RequestParam Long productid){
@@ -149,9 +155,12 @@ public class BuyingController {
 		    contractMap.put("productName", productName);
 		     
 		    List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
-		    contractMap.put("imagelist", imagelist);  
-
-			contractList.add(contractMap);
+		    contractMap.put("imagelist", imagelist);
+		    
+		    List<Review> reviewlist = reviewService.findByProductId(productId);
+		    contractMap.put("reviewlist", reviewlist);
+		    
+		    contractList.add(contractMap);
 			}
 
 		return new ResponseEntity<>(contractList, HttpStatus.OK);
@@ -232,12 +241,23 @@ public class BuyingController {
 		        
 		        List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
 		        contractMap.put("imagelist", imagelist);
+		        
+		        List<Review> reviewlist = reviewService.findByProductId(productId);
+			    contractMap.put("reviewlist", reviewlist);
 
 		        contractList.add(contractMap);
 		    }
 
 		    return new ResponseEntity<>(contractList, HttpStatus.OK);
 		
+	}
+	
+	//입찰 삭제
+	@DeleteMapping("/api/delete/buying/{id}")
+	public ResponseEntity deleteBuying(@PathVariable Long id) {
+		buyingService.delete(id);
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 

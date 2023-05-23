@@ -110,4 +110,9 @@ public class BuyingService {
 	public List<Buying> findBuyingByMemberMemberNumberAndRegistDateBetween(Long memberNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 			return buyingRepository.findBuyingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
 	}
+
+	public void delete(Long id) {
+		buyingRepository.deleteById(id);
+		
+	}
 }
