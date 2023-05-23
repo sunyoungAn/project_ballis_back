@@ -100,13 +100,20 @@ public class AdminSellingService {
 	 */
 	public AdminSellingPaymentDTO getPayment(Long targetSellingId) {
 		
-		Payment targetPayment = paymentRepository.findBySelling_Id(targetSellingId);
+		List<Payment> targetPaymentList = paymentRepository.findBySelling_Id(targetSellingId);
 		
+		// 리팩토링 대상 : 보관판매타겟 아이디가 들어 있는 대상이 2개인 문제가 있어서 일단 이렇게 회피
 		AdminSellingPaymentDTO dto = new AdminSellingPaymentDTO();
-		dto.setPaymentType(targetPayment.getPaymentType());
-		dto.setPrice(targetPayment.getPrice());
-		dto.setRegistDate(targetPayment.getRegistDate());
-		;
+		for(Payment target : targetPaymentList) {
+			if(target.getContract() != null) {
+				// 거래 체결 아이디가 있으면 제외
+				continue;
+			}
+			dto.setPaymentType(target.getPaymentType());
+			dto.setPrice(target.getPrice());
+			dto.setRegistDate(target.getRegistDate());
+		}
+
 		return dto;
 	}
 
