@@ -163,6 +163,11 @@ public class MemberController {
 
 		if (member != null) {
 			Long memberNumber = member.getMemberNumber();
+			
+			//탈퇴한 멤버 로그인 관리
+			 if (member.getMemberStatus() == 3) {
+		            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			 }
 
 			String token = jwtService.getToken("memberNumber", memberNumber);
 
