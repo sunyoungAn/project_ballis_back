@@ -204,7 +204,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             + "LEFT JOIN Selling sell ON prod.id = sell.product "
             + "AND (sell.sellingStatus = 1 OR sell.sellingStatus = 17) "
             + "LEFT JOIN Wish wi ON prod.id = wi.product "
-            + "LEFT JOIN Review re ON prod.id = re.product "
+            + "LEFT JOIN Review re ON prod.id = re.product AND re.dataStatus = 1 "
             + "LEFT JOIN Contract con ON prod.id = con.product "
             + "WHERE (sell.wishPrice IS NULL OR "
             + "sell.wishPrice = ("
