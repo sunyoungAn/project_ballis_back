@@ -38,4 +38,10 @@ public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSp
 	List<Contract> findBySellerNumberAndRegistDateBetween(Long sellerNumber, LocalDateTime startDateTime,
 			LocalDateTime endDateTime);
 
+
+	List<Contract> findBySellerNumberAndSellingStatus(Long memberNumber, int i);
+
+
+	List<Contract> findBySellerNumberAndProductIdAndSellingStatus(Long memberNumber, Long productId, int i);
+
 }

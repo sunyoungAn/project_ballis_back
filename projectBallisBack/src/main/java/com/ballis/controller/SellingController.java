@@ -175,9 +175,9 @@ public class SellingController {
 
 		if (inventoryDiv == 1) {
 		    filteredList = lists.stream()
-		        .filter(selling -> selling.getSellingStatus() >= 11)
+		        .filter(selling -> selling.getSellingStatus() >= 11 && selling.getSellingStatus() <= 18)
 		        .collect(Collectors.toList());
-		} else if (inventoryDiv == 2) {
+		    } else if (inventoryDiv == 2) {
 		    filteredList = lists.stream()
 		        .filter(selling -> selling.getSellingStatus() < 3)
 		        .collect(Collectors.toList());
@@ -196,11 +196,22 @@ public class SellingController {
 		    
 		    List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
 		    sellingMap.put("imagelist", imagelist);
-		    sellingList.add(sellingMap);
-		}
-		return new ResponseEntity<>(sellingList, HttpStatus.OK);
+		   
+		    
+		    List<Contract> contractlist = contractService.findBySellerNumberAndProductIdAndSellingStatus(memberNumber, productId, 50);
+	        if (!contractlist.isEmpty()) {
+	            Contract contract = contractlist.get(0);
+	            sellingMap.put("sellingStatus", contract.getSellingStatus());
+	        } else {
+	            sellingMap.put("sellingStatus", selling.getSellingStatus());
+	        }
+
+	        sellingList.add(sellingMap);
+	    }
+
+	    return new ResponseEntity<>(sellingList, HttpStatus.OK);
 	}
-	
+	//입찰 삭제
 	@DeleteMapping("/api/delete/selling/{id}")
 	public ResponseEntity deleteSelling(@PathVariable Long id) {
 		sellingService.delete(id);
@@ -242,9 +253,9 @@ public class SellingController {
 		List<Map<String, Object>> contractList = new ArrayList<>();
 		
 		List<Contract> lists = contractService.findBySellerNumber(sellerNumber);
-		List<Contract> filterdList = lists.stream().filter(contract -> contract.getSellingStatus() >=50)
-											.collect(Collectors.toList());
-		
+		List<Contract> filterdList = lists.stream()
+				.filter(contract -> contract.getSellingStatus() == null || contract.getSellingStatus() >= 50)
+			    .collect(Collectors.toList());
 		for(Contract contract : filterdList) {
 			Map<String, Object> contractMap = new HashMap<>();
 			contractMap.put("contract", contract);
