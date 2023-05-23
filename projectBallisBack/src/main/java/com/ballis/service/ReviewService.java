@@ -39,7 +39,7 @@ public class ReviewService {
     }
     
     public Review getLeftReviewProduct(Long reviewid, Long productid) {
-    	return reviewRepository.findFirstByIdAndProductIdGreaterThanOrderByIdAsc(reviewid, productid);
+    	return reviewRepository.findFirstByProductIdAndIdGreaterThanOrderByIdAsc(productid, reviewid);
     }
     
     // 오른쪽 리뷰 선택
@@ -48,7 +48,7 @@ public class ReviewService {
     }
     
     public Review getRightReviewProduct(Long reviewid, Long productid) {
-    	return reviewRepository.findFirstByIdAndProductIdLessThanOrderByIdDesc(reviewid, productid);
+    	return reviewRepository.findFirstByProductIdAndIdLessThanOrderByIdDesc(productid, reviewid);
     }
 
 	public List<Review> findByProductId(Long productId) {

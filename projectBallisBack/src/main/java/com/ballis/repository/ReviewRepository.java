@@ -37,12 +37,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
 	// 변수로 받은 reviewId와 가까우면서 큰 revieId 찾기
 	Review findFirstByIdGreaterThanOrderByIdAsc(Long reviewId);
 	
-	Review findFirstByIdAndProductIdGreaterThanOrderByIdAsc(Long reviewId, Long productId);
+	Review findFirstByProductIdAndIdGreaterThanOrderByIdAsc(Long productId, Long reviewId);
 	
 	// 변수로 받은 reviewId와 가까우면서 작은 revieId 찾기
 	Review findFirstByIdLessThanOrderByIdDesc(Long reviewId);
 	
-	Review findFirstByIdAndProductIdLessThanOrderByIdDesc(Long reviewId, Long productId);
+	Review findFirstByProductIdAndIdLessThanOrderByIdDesc(Long productid, Long reviewid);
 
 	List<Review> findByProductId(Long productId);
 
