@@ -140,7 +140,7 @@ public class ReviewController {
 			
 			Image image = new Image();
 			image.setImagePath(filename);
-			image.setPageDiv(3);
+			image.setPageDiv(2);
 			image.setTargetId(targetId1);
 			image.setMainImageDiv(1);
 			image.setRegistDate(LocalDateTime.now());
@@ -157,7 +157,7 @@ public class ReviewController {
 			        
 			        Image subImages = new Image();
 			        subImages.setImagePath(subImageFilename);
-			        subImages.setPageDiv(3);
+			        subImages.setPageDiv(2);
 			        subImages.setTargetId(targetId1);
 			        subImages.setMainImageDiv(2); 
 			        subImages.setRegistDate(LocalDateTime.now());
