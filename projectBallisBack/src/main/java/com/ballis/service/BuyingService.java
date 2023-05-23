@@ -111,8 +111,17 @@ public class BuyingService {
 			return buyingRepository.findBuyingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
 	}
 
-	public void delete(Long id) {
-		buyingRepository.deleteById(id);
-		
+	// 구매 입찰 취소
+	@Transactional
+	public void cancel(Long id) {
+		Buying targetBuying = buyingRepository.findById(id).get();
+		targetBuying.setBuyingStatus(61); // 취소완료
+		targetBuying.setModifiedDate(LocalDateTime.now());	
+		buyingRepository.save(targetBuying);
+	}
+
+	// 구매 입찰 취소 데이터 찾기
+	public List<Buying> findByMemberMemberNumberAndBuyingStatus(Long buyerNumber, Integer buyingStatus) {
+		return buyingRepository.findByMemberMemberNumberAndBuyingStatus(buyerNumber, buyingStatus);
 	}
 }

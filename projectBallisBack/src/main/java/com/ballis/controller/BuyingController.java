@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,6 +84,12 @@ public class BuyingController {
 	    
 	    List<Buying> lists = buyingService.findBuyingByMemberMemberNumberAndRegistDateBetween(member.getMemberNumber(), startDateTime, endDateTime);
 	    for(Buying buying : lists) {
+	    	
+	    	// 구매입찰 취소 데이터는 제외
+	    	if(buying.getBuyingStatus() == 61) {
+	    		continue;
+	    	}
+	    	
 			Map<String, Object> buyingMap = new HashMap<>();
 			buyingMap.put("buying", buying);
 		    
@@ -174,6 +181,12 @@ public class BuyingController {
 		
 		List<Buying> lists = buyingService.finByMemberMemberNumber(member.getMemberNumber());
 		for(Buying buying : lists) {
+			
+			// 구매입찰 취소 데이터는 제외
+			if(buying.getBuyingStatus() == 61) {
+				continue;
+			}
+			
 			Map<String, Object> buyinggMap = new HashMap<>();
 			buyinggMap.put("buying", buying);
 		    
@@ -252,10 +265,11 @@ public class BuyingController {
 		
 	}
 	
-	//입찰 삭제
-	@DeleteMapping("/api/delete/buying/{id}")
-	public ResponseEntity deleteBuying(@PathVariable Long id) {
-		buyingService.delete(id);
+	//구매 입찰 취소
+	@PutMapping("/api/cancel/buying/{id}")
+	public ResponseEntity cancelBuying(@PathVariable Long id) {
+		
+		buyingService.cancel(id);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

@@ -22,5 +22,8 @@ public interface BuyingRepository extends JpaRepository<Buying, Long>,JpaSpecifi
 
 	List<Buying> findBuyingByMemberMemberNumberAndRegistDateBetween(Long memberNumber, LocalDateTime startDateTime,
 			LocalDateTime endDateTime);
+
+	// 구매입찰 취소 데이터
+	List<Buying> findByMemberMemberNumberAndBuyingStatus(Long buyerNumber, Integer buyingStatus);
 	
 }
