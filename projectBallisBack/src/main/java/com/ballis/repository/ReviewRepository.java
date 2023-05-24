@@ -47,4 +47,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, JpaSpecif
 	
 	List<Review> findByProductId(Long productId);
 
+	List<Review> findByMemberMemberNumberAndProductIdAndDataStatus(Long buyerNumber, Long productId, int i);
+
 }

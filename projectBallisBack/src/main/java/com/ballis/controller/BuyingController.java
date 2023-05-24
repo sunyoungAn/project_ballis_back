@@ -164,7 +164,7 @@ public class BuyingController {
 		    List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
 		    contractMap.put("imagelist", imagelist);
 		    
-		    List<Review> reviewlist = reviewService.findByProductId(productId);
+		    List<Review> reviewlist = reviewService.findByMemberMemberNumberAndProductIdAndDataStatus(buyerNumber, productId, 1);
 		    contractMap.put("reviewlist", reviewlist);
 		    
 		    contractList.add(contractMap);
@@ -255,7 +255,7 @@ public class BuyingController {
 		        List<Image> imagelist = imageService.findByTargetIdAndPageDiv(productId, 1);
 		        contractMap.put("imagelist", imagelist);
 		        
-		        List<Review> reviewlist = reviewService.findByProductId(productId);
+		        List<Review> reviewlist = reviewService.findByMemberMemberNumberAndProductIdAndDataStatus(buyerNumber, productId, 1);
 			    contractMap.put("reviewlist", reviewlist);
 
 		        contractList.add(contractMap);
