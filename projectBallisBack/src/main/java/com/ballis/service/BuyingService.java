@@ -107,10 +107,6 @@ public class BuyingService {
 		return buyingRepository.findByMemberMemberNumber(memberNumber);
 	}
 
-	public List<Buying> findBuyingByMemberMemberNumberAndRegistDateBetween(Long memberNumber, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-			return buyingRepository.findBuyingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
-	}
-
 	// 구매 입찰 취소
 	@Transactional
 	public void cancel(Long id) {
@@ -124,4 +120,19 @@ public class BuyingService {
 	public List<Buying> findByMemberMemberNumberAndBuyingStatus(Long buyerNumber, Integer buyingStatus) {
 		return buyingRepository.findByMemberMemberNumberAndBuyingStatus(buyerNumber, buyingStatus);
 	}
+
+	public Buying findByDataStatus(Integer dataStatus) {
+		return buyingRepository.findByDataStatus(dataStatus);
+	}
+
+	public List<Buying> findBuyingByMemberMemberNumberAndDataStatusAndRegistDateBetween(Long memberNumber, int i,
+			LocalDateTime startDateTime, LocalDateTime endDateTime) {
+		return buyingRepository.findBuyingByMemberMemberNumberAndDataStatusAndRegistDateBetween(memberNumber, 1, startDateTime, endDateTime);
+	}
+
+	public List<Buying> finByMemberMemberNumberAndDataStatus(Long memberNumber, int i) {
+		return buyingRepository.findByMemberMemberNumberAndDataStatus(memberNumber, 1);
+	}
+
+	
 }
