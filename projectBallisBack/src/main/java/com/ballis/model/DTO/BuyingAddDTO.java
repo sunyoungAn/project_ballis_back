@@ -16,8 +16,5 @@ public class BuyingAddDTO {
 	private Integer productSize;
 	private Integer wishPrice;
 	private LocalDateTime expiryDate;
-//	private LocalDateTime registDate;
-//	private Integer buyingStatus;
-//	private Integer dataStatus;
 
 }

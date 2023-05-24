@@ -32,7 +32,7 @@ public class PaymentService {
 	@Autowired
 	private MemberRepository memberRepository;
 	
-	// 결제 완료
+		// 결제 완료
 		@Transactional
 	    public Payment addPayment(PaymentAddDTO paymentDto) {
 	        Payment payment = new Payment();

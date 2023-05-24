@@ -15,6 +15,7 @@ import com.ballis.model.DTO.ContractAddDTO;
 import com.ballis.model.DTO.SellingAddDTO;
 import com.ballis.model.DTO.ContractSellingPaymentDTO;
 import com.ballis.model.DTO.PaymentAddDTO;
+import com.ballis.service.BuyingService;
 import com.ballis.service.ContractService;
 import com.ballis.service.PaymentService;
 import com.ballis.service.SellingService;
@@ -30,13 +31,16 @@ public class PaymentController {
 	private ContractService contractService;
 	@Autowired
 	private SellingService sellingService;
+	@Autowired
+	private BuyingService buyingService;
 	
-	// 결제 완료 -> 빠른배송, 즉시구매, 보관판매
+	// 결제 완료 -> 빠른배송, 즉시구매, 보관판매, 즉시판매
 	@PostMapping("/api/add/payment")
 	@Transactional
 	public ResponseEntity<ContractSellingPaymentDTO> addConSellPay(@RequestBody ContractSellingPaymentDTO conSellPayDto, @RequestParam String type) {
 	    try {
 	    	if("fast".equals(type) || "normal".equals(type)) { // 구매-빠른배송, 즉시구매
+	    		// selling 상태업데이트, contract 들어감, buying이 null
 		        ContractAddDTO contractDto = conSellPayDto.getContractDto();
 		        Contract contractInfo = contractService.save(contractDto, type);        
 		        sellingService.updateSelling(contractDto.getSellingId(), type);    	
@@ -51,6 +55,7 @@ public class PaymentController {
 		        return new ResponseEntity<>(contractAndPaymentDTO, HttpStatus.OK);
 		        
 	    	} else if("keep".equals(type)) { // 판매-보관판매
+	    		// selling 들어감, contract는 null, buying은 null
 		        SellingAddDTO sellingDto = conSellPayDto.getSellingDto();
 		        Selling sellingInfo = sellingService.save(sellingDto, type);
 	    	
@@ -60,6 +65,21 @@ public class PaymentController {
 
 		        ContractSellingPaymentDTO contractAndPaymentDTO = new ContractSellingPaymentDTO();
 		        contractAndPaymentDTO.setSellingDto(sellingDto);
+		        contractAndPaymentDTO.setPaymentDto(paymentDto);
+		        return new ResponseEntity<>(contractAndPaymentDTO, HttpStatus.OK);
+	    	
+	    	} else if("sell".equals(type)) { // 판매-즉시판매
+	    		// selling이 null, contract 들어감, buying 상태 업데이트
+		        ContractAddDTO contractDto = conSellPayDto.getContractDto();
+		        Contract contractInfo = contractService.save(contractDto, type);    
+		        buyingService.updateBuying(contractDto.getBuyingId());   
+		        
+		        PaymentAddDTO paymentDto = conSellPayDto.getPaymentDto(); 
+		        paymentDto.setContractId(contractInfo.getId());
+		        Payment paymentInfo = paymentService.addPayment(paymentDto);
+		        
+		        ContractSellingPaymentDTO contractAndPaymentDTO = new ContractSellingPaymentDTO();
+		        contractAndPaymentDTO.setContractDto(contractDto);
 		        contractAndPaymentDTO.setPaymentDto(paymentDto);
 		        return new ResponseEntity<>(contractAndPaymentDTO, HttpStatus.OK);
 		        

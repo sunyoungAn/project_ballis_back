@@ -24,28 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 	List<Product> findByWishMemberNumber(@Param("member") Member member);
 
 	// 메인-신상품 목록
-//	@Query(value="SELECT "
-//			+ "new com.ballis.model.DTO.ProductNewDTO"
-//	        + "(prod.id, prod.productEngName, img.imagePath, bd.brandName, sell.wishPrice) "
-//	        + "FROM Product prod "
-//	        + "INNER JOIN Image img ON prod.id = img.targetId "
-//	        + "INNER JOIN Brand bd ON prod.brand = bd.brandId "
-//	        + "LEFT JOIN Selling sell ON prod.id = sell.product AND NOT (sell.sellingStatus = 99 OR sell.sellingStatus = 18) "
-//	        + "WHERE img.pageDiv = 1 AND img.mainImageDiv = 1 "
-//	        + "AND (sell.wishPrice IS NULL OR "
-//	        + "sell.wishPrice = ("
-//	        + "SELECT MIN(wishPrice) "
-//	        + "FROM Selling "
-//	        + "WHERE product = prod.id AND NOT (sellingStatus = 99 OR sellingStatus = 18))) "
-//	        + "AND (sell.inventoryDiv IS NULL OR sell.inventoryDiv = 1 OR "
-//	        + "(sell.inventoryDiv = 2 AND NOT EXISTS "
-//	        + "(SELECT 1 FROM Selling subSell WHERE prod.id = subSell.product "
-//	        + "AND sell.wishPrice = subSell.wishPrice "
-//	        + "AND subSell.inventoryDiv = 1 "
-//	        + "AND NOT (subSell.sellingStatus = 99 OR subSell.sellingStatus = 18)))) "
-//	        + "ORDER BY prod.launchingDate DESC "
-//	        + "LIMIT 12",
-//	        nativeQuery = false)
 	@Query(value="SELECT "
 			+ "new com.ballis.model.DTO.ProductNewDTO"
 	        + "(prod.id, prod.productEngName, img.imagePath, bd.brandName, sell.wishPrice) "
@@ -292,6 +270,4 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 			    nativeQuery = false)
 		List<ProductAllDTO> searchProduct(@Param("sort") Integer sort, @Param("searchword") String searchword);
 	
-	
-
 }
