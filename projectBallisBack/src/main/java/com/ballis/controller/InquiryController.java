@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,7 +56,7 @@ public class InquiryController {
 	private ImageService imageService;
 	
 	@PostMapping("/api/add/inquiry")
-	public ResponseEntity addInquiry(HttpServletRequest req, @RequestParam("imagePath") MultipartFile imagePath, @RequestParam("memberNumber") Long memberNumber,
+	public ResponseEntity addInquiry(HttpServletRequest req, @RequestParam("imagePath") MultipartFile imagePath, @RequestPart(value="subImage",required = false) List<MultipartFile> subImage, @RequestParam("memberNumber") Long memberNumber,
 									@RequestParam("title") String title, @RequestParam("category") Integer category, @RequestParam("inquiryStatus") Integer inquiryStatus,
 									@RequestParam("content") String content, @RequestParam("pageDiv") Integer pageDiv,
 									@RequestParam("targetId")Long targetId, @RequestParam("mainImageDiv") Integer mainImageDiv) throws IllegalStateException, IOException{
@@ -81,14 +83,36 @@ public class InquiryController {
 		
 		Image image = new Image();
 		image.setImagePath(filename);
-		image.setPageDiv(pageDiv);
+		image.setPageDiv(3);
 		image.setTargetId(targetId1);
-		image.setMainImageDiv(mainImageDiv);
+		image.setMainImageDiv(1);
 		image.setRegistDate(LocalDateTime.now());
 		
 		Image result1 = imageService.save(image);
+		
+		List<Image> subImageResults = new ArrayList<>();
+		if(subImage != null && !subImage.isEmpty()) {
+		    for (MultipartFile subImageFile : subImage) {
+		    	 String subImageFilename = uuid + subImageFile.getOriginalFilename();
+		         File subImageSaveFile = new File(uploadPath + "\\" + subImageFilename);
+		         subImageFile.transferTo(subImageSaveFile);
+		        
+		        Image subImages = new Image();
+		        subImages.setImagePath(subImageFilename);
+		        subImages.setPageDiv(3);
+		        subImages.setTargetId(targetId1);
+		        subImages.setMainImageDiv(2); 
+		        subImages.setRegistDate(LocalDateTime.now());
+		        
+		        Image subImageResult = imageService.save(subImages);
+		        
+		        subImageResults.add(subImageResult);
+		        
+		    }
+		}
 
-		return new ResponseEntity<>(Map.of("inquiry", result, "image", result1), HttpStatus.OK);
+		return new ResponseEntity<>(Map.of("inquiry", result, "image", result1, "subImages", subImageResults), HttpStatus.OK);
+		
 
 		}
 	
