@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -113,6 +114,12 @@ public class SellingController {
 		            .collect(Collectors.toList());
 
 		for (Contract contract : filteredList) {
+			
+			if(contract.getSelling() != null && contract.getSelling().getInventoryDiv() == 1) {
+	    		// 보관판매 데이터는 제외하기
+	    		continue;
+	    	}
+			
 		     Map<String, Object> contractMap = new HashMap<>();
 		     contractMap.put("contract", contract);
 
@@ -145,6 +152,12 @@ public class SellingController {
 		            .collect(Collectors.toList());
 
 		for (Contract contract : filteredList) {
+			
+			if(contract.getSelling() != null && contract.getSelling().getInventoryDiv() == 1) {
+	    		// 보관판매 데이터는 제외하기
+	    		continue;
+	    	}
+			
 		     Map<String, Object> contractMap = new HashMap<>();
 		     contractMap.put("contract", contract);
 
@@ -211,10 +224,11 @@ public class SellingController {
 
 	    return new ResponseEntity<>(sellingList, HttpStatus.OK);
 	}
-	//입찰 삭제
-	@DeleteMapping("/api/delete/selling/{id}")
-	public ResponseEntity deleteSelling(@PathVariable Long id) {
-		sellingService.delete(id);
+	
+	// 판매 입찰 취소
+	@PutMapping("/api/cancel/selling/{id}")
+	public ResponseEntity cancelSelling(@PathVariable Long id) {
+		sellingService.cancel(id);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -230,6 +244,12 @@ public class SellingController {
 	            .collect(Collectors.toList());
 
 	    for (Contract contract : filteredList) {
+	    	
+	    	if(contract.getSelling() != null && contract.getSelling().getInventoryDiv() == 1) {
+	    		// 보관판매 데이터는 제외하기
+	    		continue;
+	    	}
+	    	
 	        Map<String, Object> contractMap = new HashMap<>();
 	        contractMap.put("contract", contract);
 
@@ -257,6 +277,12 @@ public class SellingController {
 				.filter(contract -> contract.getSellingStatus() == null || contract.getSellingStatus() >= 50)
 			    .collect(Collectors.toList());
 		for(Contract contract : filterdList) {
+			
+			if(contract.getSelling() != null && contract.getSelling().getInventoryDiv() == 1) {
+	    		// 보관판매 데이터는 제외하기
+	    		continue;
+	    	}
+			
 			Map<String, Object> contractMap = new HashMap<>();
 			contractMap.put("contract", contract);
 			

@@ -135,9 +135,13 @@ public class SellingService {
 			return sellingRepository.findSellingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
 		}
 
-		public void delete(Long id) {
-			sellingRepository.deleteById(id);
-			
+		// 판매 입찰 취소
+		@Transactional
+		public void cancel(Long id) {
+			Selling targetSelling = sellingRepository.findById(id).get();
+			targetSelling.setSellingStatus(51); // 취소완료
+			targetSelling.setModifiedDate(LocalDateTime.now());	
+			sellingRepository.save(targetSelling);
 		}
 
 	
