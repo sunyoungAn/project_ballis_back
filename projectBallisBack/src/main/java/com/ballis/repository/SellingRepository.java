@@ -20,10 +20,10 @@ public interface SellingRepository extends JpaRepository<Selling, Long>, JpaSpec
 
 	List<Selling> findByMemberMemberNumber(Long memberNumber);
 	
-	List<Selling> findByMemberMemberNumberAndInventoryDiv(Long memberNumber, int inventoryDiv);
+	List<Selling> findByMemberMemberNumberAndInventoryDivAndDataStatus(Long memberNumber, int inventoryDiv, int i);
 
-	List<Selling> findSellingByMemberMemberNumberAndRegistDateBetween(Long memberNumber, LocalDateTime startDateTime,
-			LocalDateTime endDateTime);
+	List<Selling> findSellingByMemberMemberNumberAndDataStatusAndRegistDateBetween(Long memberNumber, int i,
+			LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 	
 }

@@ -76,7 +76,7 @@ public class SellingController {
 	    LocalDateTime startDateTime = startDate.atStartOfDay();
 	    LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 	    
-	    List<Selling> lists = sellingService.findSellingByMemberMemberNumberAndRegistDateBetween(member.getMemberNumber(), startDateTime, endDateTime);
+	    List<Selling> lists = sellingService.findSellingByMemberMemberNumberAndDataStatusAndRegistDateBetween(member.getMemberNumber(), 1, startDateTime, endDateTime);
 	    List<Selling> filteredList = lists.stream()
 				.filter(selling -> selling.getSellingStatus() <= 10)
 				.collect(Collectors.toList());	
@@ -183,7 +183,7 @@ public class SellingController {
 		Member member = memberService.findByMemberNumber(memberNumber);
 		List<Map<String, Object>> sellingList = new ArrayList<>();
 		
-		List<Selling> lists = sellingService.findByMemberMemberNumberAndInventoryDiv(member.getMemberNumber(), inventoryDiv);
+		List<Selling> lists = sellingService.findByMemberMemberNumberAndInventoryDivAndDataStatus(member.getMemberNumber(), inventoryDiv, 1);
 		List<Selling> filteredList;
 
 		if (inventoryDiv == 1) {

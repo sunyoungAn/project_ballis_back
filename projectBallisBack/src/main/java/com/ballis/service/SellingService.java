@@ -125,16 +125,6 @@ public class SellingService {
 			return sellingRepository.findByMemberMemberNumber(memberNumber);
 		}
 		
-		public List<Selling> findByMemberMemberNumberAndInventoryDiv(Long memberNumber, int inventoryDiv) {
-			return sellingRepository.findByMemberMemberNumberAndInventoryDiv(memberNumber, inventoryDiv);
-		}
-
-
-		public List<Selling> findSellingByMemberMemberNumberAndRegistDateBetween(Long memberNumber,
-				LocalDateTime startDateTime, LocalDateTime endDateTime) {
-			return sellingRepository.findSellingByMemberMemberNumberAndRegistDateBetween(memberNumber, startDateTime, endDateTime);
-		}
-
 		// 판매 입찰 취소
 		@Transactional
 		public void cancel(Long id) {
@@ -142,6 +132,16 @@ public class SellingService {
 			targetSelling.setSellingStatus(51); // 취소완료
 			targetSelling.setModifiedDate(LocalDateTime.now());	
 			sellingRepository.save(targetSelling);
+		}
+
+		public List<Selling> findByMemberMemberNumberAndInventoryDivAndDataStatus(Long memberNumber, int inventoryDiv,
+				int i) {
+			return sellingRepository.findByMemberMemberNumberAndInventoryDivAndDataStatus(memberNumber, inventoryDiv, 1);
+		}
+
+		public List<Selling> findSellingByMemberMemberNumberAndDataStatusAndRegistDateBetween(Long memberNumber, int i,
+				LocalDateTime startDateTime, LocalDateTime endDateTime) {
+			return sellingRepository.findSellingByMemberMemberNumberAndDataStatusAndRegistDateBetween(memberNumber, 1, startDateTime, endDateTime);
 		}
 
 	
