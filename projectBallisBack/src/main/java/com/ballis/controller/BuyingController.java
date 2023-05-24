@@ -73,8 +73,8 @@ public class BuyingController {
 	}
 	
 	//구매입찰 날짜 검색
-	@GetMapping("/api/buying/date/{memberNumber}/{dataStatus}")
-	public ResponseEntity searchDate(@PathVariable Long memberNumber, @PathVariable Integer dataStatus, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+	@GetMapping("/api/buying/date/{memberNumber}")
+	public ResponseEntity searchDate(@PathVariable Long memberNumber, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
 	        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
 		Member member = memberService.findByMemberNumber(memberNumber);
 		List<Map<String, Object>> buyingList = new ArrayList<>();
@@ -85,8 +85,8 @@ public class BuyingController {
 	    List<Buying> lists = buyingService.findBuyingByMemberMemberNumberAndDataStatusAndRegistDateBetween(member.getMemberNumber(), 1, startDateTime, endDateTime);
 	    for(Buying buying : lists) {
 	    	
-	    	// 구매입찰 취소 데이터는 제외
-	    	if(buying.getBuyingStatus() == 61) {
+	    	// 구매입찰 취소, 거래종료 데이터는 제외
+	    	if(buying.getBuyingStatus() == 61 || buying.getBuyingStatus() == 99) {
 	    		continue;
 	    	}
 	    	
@@ -174,18 +174,18 @@ public class BuyingController {
 	}
 	
 	//구매입찰 전체 리스트
-	@GetMapping("/api/get/buying/{memberNumber}/{dataStatus}")
-	public ResponseEntity getBuying(@PathVariable Long memberNumber, @PathVariable Integer dataStatus) {
+	@GetMapping("/api/get/buying/{memberNumber}")
+	public ResponseEntity getBuying(@PathVariable Long memberNumber) {
 		Member member = memberService.findByMemberNumber(memberNumber);
 		List<Map<String, Object>> buyingList = new ArrayList<>();
 		
 		List<Buying> lists = buyingService.finByMemberMemberNumberAndDataStatus(member.getMemberNumber(), 1);
 		for(Buying buying : lists) {
 			
-			// 구매입찰 취소 데이터는 제외
-			if(buying.getBuyingStatus() == 61) {
-				continue;
-			}
+			// 구매입찰 취소, 거래종료 데이터는 제외
+	    	if(buying.getBuyingStatus() == 61 || buying.getBuyingStatus() == 99) {
+	    		continue;
+	    	}
 			
 			Map<String, Object> buyinggMap = new HashMap<>();
 			buyinggMap.put("buying", buying);
